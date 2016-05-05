@@ -27,7 +27,7 @@ hscan/hkeys
     >>> ssdb.execute('hkeys', 'test', '', '', '-1')
     ['hash']
 
-TODO LIST
+TODO list
 =========
 
     1. Catch connect exceptions.
