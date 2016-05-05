@@ -1,4 +1,4 @@
-Simple SSDB client written on CPython.
+Simple SSDB client written on Cython.
 
 Tutorial
 ========
