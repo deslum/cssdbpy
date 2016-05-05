@@ -30,10 +30,10 @@ hscan/hkeys
 TODO LIST
 =========
 
-    1.Catch connect exceptions.
-    2.Convert list input hkeys in dict.
-    3.Write unit tests.
-    4.Create pool connections
-    5.Create support execute_pipeline
-    6.Rewrite cython code on pure C.
+    1. Catch connect exceptions.
+    2. Convert list input hkeys in dict.
+    3. Write unit tests.
+    4. Create pool connections
+    5. Create support execute_pipeline
+    6. Rewrite cython code on pure C.
 
