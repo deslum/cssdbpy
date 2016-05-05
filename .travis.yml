@@ -1,0 +1,18 @@
+sudo: required
+
+language: python
+python:
+- 2.7
+    
+before_install:
+  - sudo apt-get update
+  - wget --no-check-certificate https://github.com/ideawu/ssdb/archive/master.zip
+  - unzip master
+  - cd ssdb-master
+  - make
+  - sudo make install
+  - cd /usr/local/ssdb
+  - sudo ./ssdb-server -d ssdb.conf
+
+script:
+- test.py

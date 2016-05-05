@@ -1,0 +1,6 @@
+*.swp
+/build
+*.html
+*.so
+*.pyc
+/venv
