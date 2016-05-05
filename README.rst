@@ -8,8 +8,8 @@ hset/hget
 
 .. code-block:: python
 
-    >>> from ssdbpy import ssdbpy
-    >>> ssdb = Connection('127.0.0.1', 8888)
+    >>> from ssdbpy import SSDBPy
+    >>> ssdb = SSDBPy('127.0.0.1', 8888)
     >>> ssdb.execute('hset', 'test', 'hash', '1')
     '1'
     >>> conn.execute('hget', 'test', 'hash')
