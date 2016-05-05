@@ -26,3 +26,14 @@ hscan/hkeys
     ['hash', '1']
     >>> ssdb.execute('hkeys', 'test', '', '', '-1')
     ['hash']
+
+TODO LIST
+=========
+
+    1.Catch connect exceptions.
+    2.Convert list input hkeys in dict.
+    3.Write unit tests.
+    4.Create pool connections
+    5.Create support execute_pipeline
+    6.Rewrite cython code on pure C.
+
