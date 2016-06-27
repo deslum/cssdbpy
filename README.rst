@@ -24,4 +24,4 @@ or
 
 Documentation
 -------------
-http://ssdbpy.readthedocs.io/en/latest/
+http://ssdbpy.readthedocs.io/en/master/
