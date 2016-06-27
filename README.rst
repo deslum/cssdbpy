@@ -5,7 +5,6 @@ SSDBPy
 .. image:: https://readthedocs.org/projects/ssdbpy/badge/?version=latest
 
 SSDBPy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
-It's repository is https://github.com/deslum/ssdbpy
 
 
 Install
