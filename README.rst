@@ -4,8 +4,6 @@ SSDBPy
 .. image:: https://travis-ci.org/deslum/ssdbpy.svg?branch=master
     :target: https://travis-ci.org/deslum/ssdbpy
 .. image:: https://readthedocs.org/projects/ssdbpy/badge/?version=latest
-:target: http://ssdbpy.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
 
 
 SSDBPy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
