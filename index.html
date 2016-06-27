@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Ssdbpy by deslum</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/deslum/ssdbpy">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Ssdbpy</h1>
+            <h2>Fast and simple SSDB client written on cython.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/deslum/ssdbpy/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/deslum/ssdbpy/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h2>
+<a id="what-is-ssdb" class="anchor" href="#what-is-ssdb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is SSDB?</h2>
+
+<p>SSDB is a high performace key-value(key-string, key-zset, key-hashmap) NoSQL database, an alternative to Redis.
+SSDB is stable, production-ready and is widely used by many Internet companies including QIHU 360. It's repository is <a href="https://github.com/ideawu/ssdb">https://github.com/ideawu/ssdb</a></p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>LevelDB client-server support, written in C/C++</li>
+<li>Designed to store collection data</li>
+<li>Persistent key-value, key-zset, key-map('hashmap') storage</li>
+<li>Redis clients are supported</li>
+<li>Client API supports including C++, PHP, Python, Cpy, Java, nodejs, Ruby, Go</li>
+<li>Persistent queue service</li>
+<li>Replication(master-slave), load balance</li>
+<li>GUI administration tool(phpssdbadmin)</li>
+<li>Built-in CLI nagios self-checks</li>
+</ul>
+
+<h2>
+<a id="about-ssdbpy" class="anchor" href="#about-ssdbpy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About ssdbpy</h2>
+
+<p>ssdbpy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
+It's repository is <a href="https://github.com/deslum/ssdbpy">https://github.com/deslum/ssdbpy</a></p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<p>pip install ssdbpy</p>
+
+<p>or
+   pip install <a href="https://github.com/deslum/ssdbpy">https://github.com/deslum/ssdbpy</a></p>
+
+<h2>
+<a id="connection" class="anchor" href="#connection" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Connection</h2>
+
+<pre><code>&gt;&gt;&gt; from ssdbpy import SSDBPy
+&gt;&gt;&gt; ssdb = SSDBPy('127.0.0.1', 8888)
+</code></pre>
+
+<h2>
+<a id="hset" class="anchor" href="#hset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hset</h2>
+
+<p>Set the string value in argument as value of the key of a hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hset', 'test', 'hash', '1')
+'1'
+</code></pre>
+
+<h2>
+<a id="hget" class="anchor" href="#hget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hget</h2>
+
+<p>Get the value related to the specified key of a hashmap</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hget', 'test', 'hash')
+'1'
+</code></pre>
+
+<h2>
+<a id="hdel" class="anchor" href="#hdel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hdel</h2>
+
+<p>Delete specified key of a hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hdel', 'test', 'hash')
+'1'
+</code></pre>
+
+<h2>
+<a id="hincr" class="anchor" href="#hincr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hincr</h2>
+
+<p>Increment the number stored at key in a hashmap by num. The num argument could be a negative integer. The old number is first converted to an integer before increment, assuming it was stored as literal integer.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hincr', 'test', 'hash', 1)
+'1'
+</code></pre>
+
+<h2>
+<a id="hscan" class="anchor" href="#hscan" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hscan</h2>
+
+<p>List key-value pairs of a hashmap with keys in range (key_start, key_end]</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hscan', 'test', '', '', '-1')
+['hash', '1']
+</code></pre>
+
+<h2>
+<a id="hkeys" class="anchor" href="#hkeys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hkeys</h2>
+
+<p>List keys of a hashmap in range (key_start, key_end].</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hkeys', 'test', '', '', '-1')
+['hash']
+</code></pre>
+
+<h2>
+<a id="hsize" class="anchor" href="#hsize" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hsize</h2>
+
+<p>Return the number of key-value pairs in the hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hsize', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="hlist" class="anchor" href="#hlist" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hlist</h2>
+
+<p>List hashmap names in range (name_start, name_end]</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hlist', '', '')
+3
+</code></pre>
+
+<h2>
+<a id="hgetall" class="anchor" href="#hgetall" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hgetall</h2>
+
+<p>Returns the whole hash, as an array of strings indexed by strings.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hgetall', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="hclear" class="anchor" href="#hclear" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hclear</h2>
+
+<p>Delete all keys in a hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hgetall', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="multi_hset" class="anchor" href="#multi_hset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>multi_hset</h2>
+
+<p>Set multiple key-value pairs(kvs) of a hashmap in one method call.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hgetall', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="multi_hget" class="anchor" href="#multi_hget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>multi_hget</h2>
+
+<p>Get the values related to the specified multiple keys of a hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hgetall', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="multi_hdel" class="anchor" href="#multi_hdel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>multi_hdel</h2>
+
+<p>Delete specified multiple keys in a hashmap.</p>
+
+<pre><code>&gt;&gt;&gt; ssdb.execute('hgetall', 'test')
+3
+</code></pre>
+
+<h2>
+<a id="questions" class="anchor" href="#questions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Questions?</h2>
+
+<p><a href="mailto:randomazer@gmail.com">randomazer@gmail.com</a></p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/deslum">deslum</a> can be found on <a href="https://github.com/deslum/ssdbpy">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="https://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
