@@ -47,7 +47,7 @@ Connection
 
 .. code-block:: python
 
-    >>> from ssdbpy import Connection
+    >>> from cssdbpy import Connection
     >>> ssdb = Connection('127.0.0.1', 8888)
 
 hset
