@@ -47,6 +47,9 @@ http://cssdbpy.readthedocs.io/en/master/
 
 Benchmark
 -------------
+
+MacBook Pro 2012 2,5 GHz Intel Core i5 4 ГБ 1600 МГц DDR3
+
 .. image:: benchmark/benchmark.png
    :height: 100px
    :width: 200 px
