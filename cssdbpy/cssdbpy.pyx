@@ -8,7 +8,7 @@ DEF NOT_FOUND = b'not_found'
 DEF END_RESPONSE = b'\n\n'
 
 
-cdef class SSDBPy(object):
+cdef class Connection(object):
 
 	cdef object sock
 	cdef object host
