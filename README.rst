@@ -3,7 +3,7 @@ cssdbpy
 
 .. image:: https://readthedocs.org/projects/ssdbpy/badge/?version=master
 
-SSDBPy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
+SSDBPy is a simple SSDB client written on Cython. Faster standart SSDB client.
 
 
 Install
@@ -39,6 +39,17 @@ Example
    	print conn.execute('hscan', 'words', '', '', 100)
    conn.execute('hclear','words')
 
+
+
 Documentation
 -------------
 http://cssdbpy.readthedocs.io/en/master/
+
+Benchmark
+-------------
+.. image:: benchmark/benchmark.png
+   :height: 100px
+   :width: 200 px
+   :scale: 50 %
+   :alt: alternate text
+   :align: center
