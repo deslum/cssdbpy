@@ -37,7 +37,7 @@ Example
    		delete = conn.execute('hdel','words', md5word)
    		print md5word, value, create, exists, delete
    	print conn.execute('hscan', 'words', '', '', 100)
-   conn.execute('hclear','words')
+      conn.execute('hclear','words')
 
 
 
