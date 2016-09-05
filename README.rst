@@ -1,7 +1,9 @@
 cssdbpy
 ------
 
-[![Documentation Status](https://readthedocs.org/projects/ssdbpy/badge/?version=master)](http://ssdbpy.readthedocs.io/en/master/?badge=master)
+.. image:: https://readthedocs.org/projects/ssdbpy/badge/?version=master
+:target: http://ssdbpy.readthedocs.io/en/master/?badge=master
+:alt: Documentation Status
 
 SSDBPy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
 
