@@ -1,4 +1,4 @@
-Welcome to ssdbpy's documentation!
+Welcome to cssdbpy's documentation!
 ===================================
 
 What is SSDB?
@@ -22,10 +22,10 @@ Features
  * Built-in CLI nagios self-checks
 
 
-About ssdbpy
+About cssdbpy
 -------------
 
-ssdbpy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
+cssdbpy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
 It's repository is https://github.com/deslum/ssdbpy
 
 
@@ -34,21 +34,21 @@ Install
 
 .. code-block:: bash
 
-   pip install ssdbpy
+   pip install cssdbpy
 
 or
 
 .. code-block:: bash
 
-   pip install https://github.com/deslum/ssdbpy
+   pip install https://github.com/deslum/cssdbpy
 
 Connection
 ----------
 
 .. code-block:: python
 
-    >>> from ssdbpy import SSDBPy
-    >>> ssdb = SSDBPy('127.0.0.1', 8888)
+    >>> from ssdbpy import Connection
+    >>> ssdb = Connection('127.0.0.1', 8888)
 
 hset
 ---------------
