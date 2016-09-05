@@ -26,7 +26,7 @@ About cssdbpy
 -------------
 
 cssdbpy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
-It's repository is https://github.com/deslum/ssdbpy
+It's repository is https://github.com/deslum/cssdbpy
 
 
 Install
