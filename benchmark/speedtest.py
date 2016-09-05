@@ -3,7 +3,7 @@ from SSDB import SSDB
 from time import time
 
 def cssdbpy_test():
-	conn = Connection('192.168.0.103', 8888)
+	conn = Connection('127.0.0.1', 8888)
 	start_time = time()
 	map(lambda x: conn.execute('hset','cssdbpy',str(i), 1), [i for i in xrange(10000,90000)])
 	print 'hset', time()-start_time
@@ -16,7 +16,7 @@ def cssdbpy_test():
 		print action, time()-start_time
 
 def SSDB_test():
-	conn = SSDB('192.168.0.103', 8888)
+	conn = SSDB('127.0.0.1', 8888)
 	start_time = time()
 	map(lambda x: conn.request('hset',['cssdbpy',str(i), 1]), [i for i in xrange(10000,90000)])
 	print 'hset', time()-start_time
