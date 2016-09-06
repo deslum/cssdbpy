@@ -17,7 +17,7 @@ or
 
 .. code-block:: bash
 
-   pip install https://github.com/deslum/cssdbpy
+   pip install https://github.com/deslum/cssdbpy/archive/master.zip
 
 Example
 -------
