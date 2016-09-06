@@ -52,7 +52,7 @@ MacBook Pro 2012 2,5 GHz Intel Core i5 4 ГБ 1600 МГц DDR3
 80000 key/value fields
 
 .. image:: benchmark/benchmark.png
-:height: 100px
+   :height: 100px
    :width: 200 px
        :scale: 50 %
        :alt: alternate text
