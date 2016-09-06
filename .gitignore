@@ -1,6 +1,6 @@
 *.swp
 /build
-/docs
+/docs/_build/*
 *.html
 *.so
 *.pyc

@@ -4,6 +4,7 @@ from distutils.extension import Extension
 
 try:
     from Cython.Distutils import build_ext
+
     have_cython = True
 except ImportError:
     have_cython = False
@@ -25,6 +26,5 @@ setup(
     author='deslum',
     author_email='randomazer@gmail.com',
     url='https://github.com/cssdbpy',
-    description='High performance SSDB client implemented with Cython',
-    long_description=open('README.rst').read(),
+    description='High performance SSDB client implemented with Cython'
 )
