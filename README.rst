@@ -1,8 +1,6 @@
 cssdbpy
 ------
 
-.. image:: https://readthedocs.org/projects/ssdbpy/badge/?version=master
-
 cssdbpy is a simple SSDB client written on Cython. Faster standart SSDB client.
 
 
