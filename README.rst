@@ -3,7 +3,8 @@ cssdbpy
 
 .. image:: https://img.shields.io/pypi/v/cssdbpy.svg?maxAge=2592000?style=flat
 .. image:: https://img.shields.io/pypi/l/cssdbpy.svg?maxAge=2592000?style=flat
-.. image:: https://img.shields.io/gitter/room/cssdbpy/cssdbpy.svg?maxAge=2592000   :target: https://gitter.im/deslum_projects/cssdbpy
+.. image:: https://img.shields.io/gitter/room/cssdbpy/cssdbpy.svg?maxAge=2592000   
+   :target: https://gitter.im/deslum_projects/cssdbpy
 
 Cssdbpy is a simple SSDB client written on Cython. Faster standart SSDB client.
 
