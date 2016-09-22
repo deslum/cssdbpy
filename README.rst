@@ -6,7 +6,9 @@ cssdbpy
 .. image:: https://img.shields.io/gitter/room/cssdbpy/cssdbpy.svg?maxAge=2592000
    :target: https://gitter.im/deslum_projects/cssdbpy
 
-Cssdbpy is a simple SSDB client written on Cython. Faster standard SSDB client.
+Cssdbpy is a simple SSDB client written on Cython. Faster standard SSDB client. 
+
+SSDB a high performance NoSQL database supporting many data structures, an alternative to Redis. http://ssdb.io/
 
 
 Install
