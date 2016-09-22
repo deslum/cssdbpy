@@ -3,10 +3,10 @@ cssdbpy
 
 .. image:: https://img.shields.io/pypi/v/cssdbpy.svg?maxAge=2592000?style=flat
 .. image:: https://img.shields.io/pypi/l/cssdbpy.svg?maxAge=2592000?style=flat
-.. image:: https://img.shields.io/gitter/room/cssdbpy/cssdbpy.svg?maxAge=2592000   
+.. image:: https://img.shields.io/gitter/room/cssdbpy/cssdbpy.svg?maxAge=2592000
    :target: https://gitter.im/deslum_projects/cssdbpy
 
-Cssdbpy is a simple SSDB client written on Cython. Faster standart SSDB client.
+Cssdbpy is a simple SSDB client written on Cython. Faster standard SSDB client.
 
 
 Install
@@ -29,7 +29,7 @@ Example
    from cssdbpy import Connection
    from time import time
    import md5
-   
+
    if __name__ == '__main__':
       conn = Connection('127.0.0.1', 8888)
       for i in xrange(0, 1000):
@@ -56,7 +56,7 @@ MacBook Pro 2012 2,5 GHz Intel Core i5 4 ГБ 1600 МГц DDR3
 
 .. image:: benchmark/bench.png
    :height: 100px
-   :width: 200 px
-   :scale: 50 %
+   :width: 200px
+   :scale: 50%
    :alt: alternate text
    :align: center

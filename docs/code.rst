@@ -9,7 +9,7 @@ Client
    .. autoclass:: StrictSSDB
 
 
-   Key/Value 
+   Key/Value
    ^^^^^^^^^
 
    A container of (key, value) pairs in ssdb. A key name maps a string value.
@@ -243,11 +243,11 @@ Client
    """"""
    .. automethod:: StrictSSDB.hrscan
 
-   
+
    Zsets
    ^^^^^
 
-   A sorted set in ssdb. It's contain keys with scores in ``zset`` 
+   A sorted set in ssdb. It contains keys with scores in ``zset``
 
    .. code-block:: python
 
