@@ -37,25 +37,22 @@ cdef class Connection(object):
 	cdef _read(self, bytes data=b''):
 		while True:
 			tmp = self.sock.recv(READ_BUFFER)
-			data+=tmp
+			data += tmp
 			if tmp[-2:] == END_RESPONSE:
 				break
 		cdef list ndata = self._parse(data)
-		if ndata and len(ndata)<2:
+		if ndata and len(ndata) < 2:
 			return int(ndata.pop())
-		else:
-			return ndata
+		return ndata
 
 	cdef list _parse(self, char* data):
 		cdef list ndata = data.split(b'\n')
 		status, args = ndata.pop(1), ndata[2::2]
 		if status == OK:
-			response = filter(lambda x: x, args)
+			return filter(lambda x: x, args)
 		elif status == NOT_FOUND:
-			response = list(b'0')
-		else:
-			response = data
-		return response
+			return list(b'0')
+		return data
 
 	def __del__(self):
 		self.sock.close()
