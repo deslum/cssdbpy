@@ -19,7 +19,7 @@ else:
                    ]
 setup(
     name='cssdbpy',
-    version='0.0.1',
+    version='0.0.3',
     packages=['cssdbpy'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,

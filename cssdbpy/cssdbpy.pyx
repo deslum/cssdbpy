@@ -51,7 +51,7 @@ cdef class Connection(object):
         status, args = ndata.pop(1), ndata[2::2]
         if status == OK:
             return filter(lambda x: x, args)
-        elif status == NOT_FOUND:
+        if status == NOT_FOUND:
             return list(b'0')
         return list(data)
 

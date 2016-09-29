@@ -1856,7 +1856,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  *             return filter(lambda x: x, args)             # <<<<<<<<<<<<<<
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  *             return list(b'0')
  */
 
@@ -1956,7 +1956,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:             # <<<<<<<<<<<<<<
  *             return filter(lambda x: x, args)
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  */
   __pyx_t_3 = (__Pyx_PyBytes_Equals(__pyx_v_status, __pyx_n_b_ok, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_3) {
@@ -1965,7 +1965,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  *             return filter(lambda x: x, args)             # <<<<<<<<<<<<<<
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  *             return list(b'0')
  */
     __Pyx_XDECREF(__pyx_r);
@@ -1992,14 +1992,14 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:             # <<<<<<<<<<<<<<
  *             return filter(lambda x: x, args)
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  */
   }
 
   /* "cssdbpy/cssdbpy.pyx":54
  *         if status == OK:
  *             return filter(lambda x: x, args)
- *         elif status == NOT_FOUND:             # <<<<<<<<<<<<<<
+ *         if status == NOT_FOUND:             # <<<<<<<<<<<<<<
  *             return list(b'0')
  *         return list(data)
  */
@@ -2008,7 +2008,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
 
     /* "cssdbpy/cssdbpy.pyx":55
  *             return filter(lambda x: x, args)
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  *             return list(b'0')             # <<<<<<<<<<<<<<
  *         return list(data)
  * 
@@ -2023,14 +2023,14 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
     /* "cssdbpy/cssdbpy.pyx":54
  *         if status == OK:
  *             return filter(lambda x: x, args)
- *         elif status == NOT_FOUND:             # <<<<<<<<<<<<<<
+ *         if status == NOT_FOUND:             # <<<<<<<<<<<<<<
  *             return list(b'0')
  *         return list(data)
  */
   }
 
   /* "cssdbpy/cssdbpy.pyx":56
- *         elif status == NOT_FOUND:
+ *         if status == NOT_FOUND:
  *             return list(b'0')
  *         return list(data)             # <<<<<<<<<<<<<<
  * 
