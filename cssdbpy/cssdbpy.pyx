@@ -31,8 +31,11 @@ cdef class Connection(object):
             self.execute('auth', self.password)
 	
     def execute(self, *args):
-        map(lambda field: self.sock.send(SEND_TEMPLATE.format(len(str(field)), field)), args)
-        self.sock.send(END_SEND)
+        cdef list send_object = []
+        for arg in args:
+            send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+        send_object.append(END_SEND)
+        self.sock.send(''.join(send_object))
         return self._read()
 
     cdef _read(self, bytes data = b''):
@@ -51,9 +54,10 @@ cdef class Connection(object):
         status, args = ndata.pop(1), ndata[2::2]
         if status == OK:
             return filter(lambda x: x, args)
-        if status == NOT_FOUND:
+        elif status == NOT_FOUND:
             return list(b'0')
-        return list(data)
+        else:
+            return list(data)
 
     def __del__(self):
         self.sock.close()
