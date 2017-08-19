@@ -3,6 +3,9 @@ cssdbpy
 
 .. image:: https://img.shields.io/pypi/v/cssdbpy.svg?maxAge=2592000?style=flat
         :target: https://pypi.python.org/pypi/cssdbpy/
+
+.. image:: https://img.shields.io/badge/license-BSD-blue.svg
+        :target: https://raw.githubusercontent.com/deslum/cssdbpy/master/LICENSE
         
 .. image:: https://img.shields.io/badge/python-2.x-yellow.svg
         :target: https://pypi.python.org/pypi/cssdbpy/
