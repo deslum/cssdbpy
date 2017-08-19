@@ -10,7 +10,7 @@ cssdbpy
 .. image:: https://img.shields.io/badge/python-2.x-yellow.svg
         :target: https://pypi.python.org/pypi/cssdbpy/
         
-.. image:: https://img.shields.io/badge/python-3.x-orange.svg
+.. image:: https://img.shields.io/badge/python-3.x-green.svg
         :target: https://pypi.python.org/pypi/cssdbpy/
 
 | Cssdbpy is a simple SSDB client written on Cython. Faster standard SSDB client. 
