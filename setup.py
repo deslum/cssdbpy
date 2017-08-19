@@ -22,8 +22,9 @@ setup(
     packages=['cssdbpy'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
-    author='deslum',
+    author='Yuri Bukatkin',
     author_email='randomazer@gmail.com',
     url='https://github.com/cssdbpy',
-    description='High performance SSDB client implemented with Cython'
+    description='High performance SSDB client implemented with Cython',
+    data_files = [('', ['LICENSE'])]
 )

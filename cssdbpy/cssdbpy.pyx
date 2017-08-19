@@ -38,6 +38,12 @@ cdef class Connection(object):
         self.sock.send(''.join(send_object))
         return self._read()
 
+    def pipeline(self, *args):
+        cdef list response_object = []
+        for subargs in args:
+            response_object.append(self.execute(*subargs))
+        return response_object
+
 
     cdef _read(self, bytes data = b''):
         cdef bytes tmp = b''
