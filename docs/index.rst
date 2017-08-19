@@ -4,8 +4,8 @@ Welcome to cssdbpy's documentation!
 What is SSDB?
 -------------
 
-SSDB is a high performace key-value(key-string, key-zset, key-hashmap) NoSQL database, an alternative to Redis.
-SSDB is stable, production-ready and is widely used by many Internet companies including QIHU 360. It's repository is https://github.com/ideawu/ssdb
+SSDB is a high performance key-value(key-string, key-zset, key-hashmap) NoSQL database, an alternative to Redis.
+SSDB is stable, production-ready and is widely used by many Internet companies including QIHU 360. Its repository is https://github.com/ideawu/ssdb
 
 
 Features
@@ -25,8 +25,8 @@ Features
 About cssdbpy
 -------------
 
-cssdbpy is a simple SSDB client written on Cython. 5x faster standart ssdb client.
-It's repository is https://github.com/deslum/cssdbpy
+cssdbpy is a simple SSDB client written on Cython. 5x faster standard ssdb client.
+Its repository is https://github.com/deslum/cssdbpy
 
 
 Install
@@ -61,7 +61,7 @@ Set the string value in argument as value of the key of a hashmap.
 
 hget
 ----
-Get the value related to the specified key of a hashmap
+Get the value related to the specified key of a hashmap.
 
 .. code-block:: python
 
@@ -91,7 +91,7 @@ Increment the number stored at key in a hashmap by num. The num argument could b
 hscan
 -----
 
-List key-value pairs of a hashmap with keys in range (key_start, key_end]
+List key-value pairs of a hashmap with keys in range (key_start, key_end].
 
 .. code-block:: python
 
@@ -121,7 +121,7 @@ Return the number of key-value pairs in the hashmap.
 hlist
 -----
 
-List hashmap names in range (name_start, name_end]
+List hashmap names in range (name_start, name_end].
 
 .. code-block:: python
 
