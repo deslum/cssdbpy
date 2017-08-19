@@ -52,7 +52,7 @@ cdef class Connection(object):
 			return filter(lambda x: x, args)
 		elif status == NOT_FOUND:
 			return list(b'0')
-		return data
+		return args
 
 	def __del__(self):
 		self.sock.close()
