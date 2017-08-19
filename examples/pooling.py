@@ -38,7 +38,8 @@ class PoolConnection:
 	def get_connection(self):
 		if len(self.__buffer) > 0:
 			self.__lenght =-1
-			return self.__buffer.pop(0)
+			connection = self.__buffer.pop(0)
+			return connection
 
 
 	def return_connection(self, connection):
@@ -46,12 +47,15 @@ class PoolConnection:
 
 
 	def execute(self, *args):
-		conn = pool.get_connection()
-		if conn:
-			result = conn.execute(*args)
-			self.return_connection(conn)
-			return result
-
+		__retry_count = 0
+		while __retry_count<5:
+			conn = pool.get_connection()
+			if conn:
+				result = conn.execute(*args)
+				self.return_connection(conn)
+				return result
+			else:
+				__retry_count+=1
 
 
 if __name__ == '__main__':
