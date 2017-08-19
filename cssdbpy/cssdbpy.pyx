@@ -16,7 +16,7 @@ cdef class Connection(object):
     cdef bytes password
 
 
-    def __init__(self, host = b'127.0.0.1', port = 8888, password = None):
+    def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):
         self.host = host
         self.port = port
         self.password = password

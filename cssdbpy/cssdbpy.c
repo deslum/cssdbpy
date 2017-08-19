@@ -848,7 +848,7 @@ static PyObject *__pyx_n_s_setsockopt;
 static PyObject *__pyx_n_s_socket;
 static PyObject *__pyx_n_s_split;
 static PyObject *__pyx_n_s_test;
-static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password); /* proto */
+static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_2_connect(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_4execute(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
@@ -869,14 +869,14 @@ static PyObject *__pyx_tuple__7;
 /* "cssdbpy/cssdbpy.pyx":19
  * 
  * 
- *     def __init__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
  *         self.host = host
  *         self.port = port
  */
 
 /* Python wrapper */
-static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_host = 0;
   PyObject *__pyx_v_port = 0;
   PyObject *__pyx_v_password = 0;
@@ -885,7 +885,7 @@ static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__(PyObject *__pyx_v_s
   int __pyx_clineno = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_host,&__pyx_n_s_port,&__pyx_n_s_password,0};
     PyObject* values[3] = {0,0,0};
@@ -921,7 +921,7 @@ static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -938,20 +938,20 @@ static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self), __pyx_v_host, __pyx_v_port, __pyx_v_password);
+  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self), __pyx_v_host, __pyx_v_port, __pyx_v_password);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password) {
+static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -959,11 +959,11 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cs
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__init__", 0);
+  __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "cssdbpy/cssdbpy.pyx":20
  * 
- *     def __init__(self, host = b'127.0.0.1', port = 8888, password = None):
+ *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):
  *         self.host = host             # <<<<<<<<<<<<<<
  *         self.port = port
  *         self.password = password
@@ -978,7 +978,7 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cs
   __pyx_t_1 = 0;
 
   /* "cssdbpy/cssdbpy.pyx":21
- *     def __init__(self, host = b'127.0.0.1', port = 8888, password = None):
+ *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):
  *         self.host = host
  *         self.port = port             # <<<<<<<<<<<<<<
  *         self.password = password
@@ -1030,7 +1030,7 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cs
   /* "cssdbpy/cssdbpy.pyx":19
  * 
  * 
- *     def __init__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
  *         self.host = host
  *         self.port = port
  */
@@ -1040,7 +1040,7 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___init__(struct __pyx_obj_7cs
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -2234,7 +2234,7 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(struct __pyx_o
 }
 static struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection __pyx_vtable_7cssdbpy_7cssdbpy_Connection;
 
-static PyObject *__pyx_tp_new_7cssdbpy_7cssdbpy_Connection(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_7cssdbpy_7cssdbpy_Connection(PyTypeObject *t, PyObject *a, PyObject *k) {
   struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
@@ -2248,6 +2248,9 @@ static PyObject *__pyx_tp_new_7cssdbpy_7cssdbpy_Connection(PyTypeObject *t, CYTH
   p->sock = Py_None; Py_INCREF(Py_None);
   p->host = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->password = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  if (unlikely(__pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__cinit__(o, a, k) < 0)) {
+    Py_DECREF(o); o = 0;
+  }
   return o;
 }
 
@@ -2332,7 +2335,7 @@ static PyTypeObject __pyx_type_7cssdbpy_7cssdbpy_Connection = {
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__init__, /*tp_init*/
+  0, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_7cssdbpy_7cssdbpy_Connection, /*tp_new*/
   0, /*tp_free*/
