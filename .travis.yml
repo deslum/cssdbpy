@@ -13,6 +13,8 @@ before_install:
   - sudo make install
   - cd /usr/local/ssdb
   - sudo ./ssdb-server -d ssdb.conf
-
+  - sudo apt-get install python-pip
+  - pip install https://github.com/deslum/cssdbpy/archive/master.zip
+  
 script:
-- test.py
+- tests/start_test.py
