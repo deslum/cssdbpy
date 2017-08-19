@@ -29,35 +29,35 @@ cdef class Connection(object):
         self.sock.connect((self.host, self.port))
         if self.password:
             self.execute('auth', self.password)
-	
-  def execute(self, *args):
-      cdef list send_object = []
-      for arg in args:
-          send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
-      send_object.append(END_SEND)
-      self.sock.send(''.join(send_object))
-      return self._read()
+
+    def execute(self, *args):
+        cdef list send_object = []
+        for arg in args:
+            send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+        send_object.append(END_SEND)
+        self.sock.send(''.join(send_object))
+        return self._read()
 
 
-  cdef _read(self, bytes data = b''):
-      cdef bytes tmp = b''
-      while tmp != END_RESPONSE:
-          resp = self.sock.recv(READ_BUFFER)
-          data += resp
-          tmp = resp[-2:]
-      cdef list ndata = self._parse(data)
-      if ndata and len(ndata)<2:
-          return int(ndata.pop())
-      return ndata
+    cdef _read(self, bytes data = b''):
+        cdef bytes tmp = b''
+        while tmp != END_RESPONSE:
+            resp = self.sock.recv(READ_BUFFER)
+            data += resp
+            tmp = resp[-2:]
+        cdef list ndata = self._parse(data)
+        if ndata and len(ndata)<2:
+            return int(ndata.pop())
+        return ndata
 
-	cdef list _parse(self, char* data):
-		cdef list ndata = data.split(b'\n')
-		status, args = ndata.pop(1), ndata[2::2]
-		if status == OK:
-			return filter(lambda x: x, args)
-		elif status == NOT_FOUND:
-			return list(b'0')
-		return args
+    cdef list _parse(self, char* data):
+        cdef list ndata = data.split(b'\n')
+        status, args = ndata.pop(1), ndata[2::2]
+        if status == OK:
+            return filter(lambda x: x, args)
+        elif status == NOT_FOUND:
+            return list(b'0')
+        return args
 
-	def __del__(self):
-		self.sock.close()
+    def __del__(self):
+        self.sock.close()
