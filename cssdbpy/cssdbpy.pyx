@@ -10,49 +10,54 @@ DEF END_RESPONSE = b'\n\n'
 
 cdef class Connection(object):
 
-	cdef object sock
-	cdef object host
-	cdef object port
-	cdef object password
-
-	def __init__(self, host = 'localhost', port = 8888, password = None):
-		self.host = host
-		self.port = port
-		self.sock = None
-		self._connect()
-
-	cpdef _connect(self):
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-		self.sock.connect((self.host, self.port))
-		if self.password:
-			self.execute('auth', self.password)
-	
-	def execute(self, *args):
-		map(lambda field: self.sock.send(SEND_TEMPLATE.format(len(str(field)), field)), args)
-		self.sock.send(END_SEND)
-		return self._read()
+    cdef object sock
+    cdef bytes host
+    cdef int port
+    cdef bytes password
 
 
-	cdef _read(self, bytes data=b''):
-		while True:
-			tmp = self.sock.recv(READ_BUFFER)
-			data += tmp
-			if tmp[-2:] == END_RESPONSE:
-				break
-		cdef list ndata = self._parse(data)
-		if ndata and len(ndata) < 2:
-			return int(ndata.pop())
-		return ndata
+    def __init__(self, host = b'127.0.0.1', port = 8888, password = None):
+        self.host = host
+        self.port = port
+        self.password = password
+        self.sock = None
+        self._connect()
 
-	cdef list _parse(self, char* data):
-		cdef list ndata = data.split(b'\n')
-		status, args = ndata.pop(1), ndata[2::2]
-		if status == OK:
-			return filter(lambda x: x, args)
-		elif status == NOT_FOUND:
-			return list(b'0')
-		return data
+    cpdef _connect(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        self.sock.connect((self.host, self.port))
+        if self.password:
+            self.execute('auth', self.password)
 
-	def __del__(self):
-		self.sock.close()
+    def execute(self, *args):
+        cdef list send_object = []
+        for arg in args:
+            send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+        send_object.append(END_SEND)
+        self.sock.send(''.join(send_object))
+        return self._read()
+
+
+    cdef _read(self, bytes data = b''):
+        cdef bytes tmp = b''
+        while tmp != END_RESPONSE:
+            resp = self.sock.recv(READ_BUFFER)
+            data += resp
+            tmp = resp[-2:]
+        cdef list ndata = self._parse(data)
+        if ndata and len(ndata)<2:
+            return int(ndata.pop())
+        return ndata
+
+    cdef list _parse(self, char* data):
+        cdef list ndata = data.split(b'\n')
+        status, args = ndata.pop(1), ndata[2::2]
+        if status == OK:
+            return filter(lambda x: x, args)
+        elif status == NOT_FOUND:
+            return list(b'0')
+        return args
+
+    def __del__(self):
+        self.sock.close()
