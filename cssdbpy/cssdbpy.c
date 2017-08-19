@@ -246,8 +246,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #define __Pyx_PyNumber_Divide(x,y)         PyNumber_TrueDivide(x,y)
   #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceTrueDivide(x,y)
 #else
-  #define __Pyx_PyNumber_Divide(x,y)         PyNumber_Divide(x,y)
-  #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceDivide(x,y)
+  #define __Pyx_PyNumber_Divide(x,y)         PyNumber_TrueDivide(x,y)
+  #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceTrueDivide(x,y)
 #endif
 
 #ifndef __PYX_EXTERN_C
@@ -659,24 +659,6 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
-/* StringJoin.proto */
-#if PY_MAJOR_VERSION < 3
-#define __Pyx_PyString_Join __Pyx_PyBytes_Join
-#define __Pyx_PyBaseString_Join(s, v) (PyUnicode_CheckExact(s) ? PyUnicode_Join(s, v) : __Pyx_PyBytes_Join(s, v))
-#else
-#define __Pyx_PyString_Join PyUnicode_Join
-#define __Pyx_PyBaseString_Join PyUnicode_Join
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION < 3
-    #define __Pyx_PyBytes_Join _PyString_Join
-    #else
-    #define __Pyx_PyBytes_Join _PyBytes_Join
-    #endif
-#else
-static CYTHON_INLINE PyObject* __Pyx_PyBytes_Join(PyObject* sep, PyObject* values);
-#endif
-
 /* IncludeStringH.proto */
 #include <string.h>
 
@@ -871,7 +853,6 @@ static const char __pyx_k_ok[] = "ok";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_auth[] = "auth";
 static const char __pyx_k_host[] = "host";
-static const char __pyx_k_join[] = "join";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_port[] = "port";
 static const char __pyx_k_recv[] = "recv";
@@ -907,9 +888,9 @@ static PyObject *__pyx_n_s_SOCK_STREAM;
 static PyObject *__pyx_n_s_TCP_NODELAY;
 static PyObject *__pyx_kp_b__2;
 static PyObject *__pyx_kp_b__3;
-static PyObject *__pyx_kp_s__3;
+static PyObject *__pyx_kp_u__3;
 static PyObject *__pyx_kp_b__4;
-static PyObject *__pyx_n_s_auth;
+static PyObject *__pyx_n_u_auth;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_connect;
 static PyObject *__pyx_n_s_connect_2;
@@ -919,7 +900,6 @@ static PyObject *__pyx_n_s_filter;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_host;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_join;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_b_not_found;
 static PyObject *__pyx_n_b_ok;
@@ -1370,9 +1350,9 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5); __pyx_t_5 = NULL;
     }
-    __Pyx_INCREF(__pyx_n_s_auth);
-    __Pyx_GIVEREF(__pyx_n_s_auth);
-    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_n_s_auth);
+    __Pyx_INCREF(__pyx_n_u_auth);
+    __Pyx_GIVEREF(__pyx_n_u_auth);
+    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_n_u_auth);
     __Pyx_INCREF(__pyx_v_self->password);
     __Pyx_GIVEREF(__pyx_v_self->password);
     PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_6, __pyx_v_self->password);
@@ -1540,10 +1520,10 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_4execute(struct __pyx_o
     __Pyx_INCREF(__pyx_v_arg);
     __Pyx_GIVEREF(__pyx_v_arg);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_arg);
-    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = PyObject_Length(__pyx_t_6); if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6); if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = PyInt_FromSsize_t(__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -1605,7 +1585,7 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_4execute(struct __pyx_o
  */
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_send); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyString_Join(__pyx_kp_s__3, __pyx_v_send_object); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_4 = PyUnicode_Join(__pyx_kp_u__3, __pyx_v_send_object); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_8 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2304,9 +2284,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TCP_NODELAY, __pyx_k_TCP_NODELAY, sizeof(__pyx_k_TCP_NODELAY), 0, 0, 1, 1},
   {&__pyx_kp_b__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 0, 0},
   {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
-  {&__pyx_kp_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 0},
+  {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
   {&__pyx_kp_b__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 0, 0},
-  {&__pyx_n_s_auth, __pyx_k_auth, sizeof(__pyx_k_auth), 0, 0, 1, 1},
+  {&__pyx_n_u_auth, __pyx_k_auth, sizeof(__pyx_k_auth), 0, 1, 0, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_connect, __pyx_k_connect, sizeof(__pyx_k_connect), 0, 0, 1, 1},
   {&__pyx_n_s_connect_2, __pyx_k_connect_2, sizeof(__pyx_k_connect_2), 0, 0, 1, 1},
@@ -2316,7 +2296,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_host, __pyx_k_host, sizeof(__pyx_k_host), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_join, __pyx_k_join, sizeof(__pyx_k_join), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_b_not_found, __pyx_k_not_found, sizeof(__pyx_k_not_found), 0, 0, 0, 1},
   {&__pyx_n_b_ok, __pyx_k_ok, sizeof(__pyx_k_ok), 0, 0, 0, 1},
@@ -2512,7 +2491,7 @@ PyMODINIT_FUNC PyInit_cssdbpy(void)
  * 
  * DEF SEND_TEMPLATE = b'{}\n{}\n'
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_socket, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_socket, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_socket, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2872,13 +2851,6 @@ invalid_keyword:
     #endif
     return 0;
 }
-
-/* StringJoin */
-      #if !CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyBytes_Join(PyObject* sep, PyObject* values) {
-    return PyObject_CallMethodObjArgs(sep, __pyx_n_s_join, values, NULL);
-}
-#endif
 
 /* BytesEquals */
       static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {

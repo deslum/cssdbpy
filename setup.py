@@ -4,7 +4,6 @@ from distutils.extension import Extension
 
 try:
     from Cython.Distutils import build_ext
-
     have_cython = True
 except ImportError:
     have_cython = False
@@ -19,7 +18,7 @@ else:
                    ]
 setup(
     name='cssdbpy',
-    version='0.0.3',
+    version='0.1',
     packages=['cssdbpy'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
