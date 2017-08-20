@@ -35,7 +35,7 @@ cdef class PoolConnection(object):
         self._return_connection(conn)
         return result
 
-    def __del__(self):
+    def __cdel__(self):
         for x in xrange(0, self.lenght):
             connection = self.__buffer.pop(0)
             connection.close()

@@ -733,7 +733,7 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
 static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_connection); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_7cssdbpy_4pool_PoolConnection(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_pop = {0, &__pyx_n_s_pop, 0, 0, 0};
 static PyObject *__pyx_int_0;
@@ -1506,7 +1506,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
  *         self._return_connection(conn)
  *         return result             # <<<<<<<<<<<<<<
  * 
- *     def __del__(self):
+ *     def __cdel__(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_result);
@@ -1540,25 +1540,25 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
 /* "cssdbpy/pool.pyx":38
  *         return result
  * 
- *     def __del__(self):             # <<<<<<<<<<<<<<
+ *     def __cdel__(self):             # <<<<<<<<<<<<<<
  *         for x in xrange(0, self.lenght):
  *             connection = self.__buffer.pop(0)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("__cdel__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
   CYTHON_UNUSED PyObject *__pyx_v_x = NULL;
   PyObject *__pyx_v_connection = NULL;
   PyObject *__pyx_r = NULL;
@@ -1572,11 +1572,11 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__del__", 0);
+  __Pyx_RefNannySetupContext("__cdel__", 0);
 
   /* "cssdbpy/pool.pyx":39
  * 
- *     def __del__(self):
+ *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):             # <<<<<<<<<<<<<<
  *             connection = self.__buffer.pop(0)
  *             connection.close()
@@ -1638,7 +1638,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_
     __pyx_t_1 = 0;
 
     /* "cssdbpy/pool.pyx":40
- *     def __del__(self):
+ *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):
  *             connection = self.__buffer.pop(0)             # <<<<<<<<<<<<<<
  *             connection.close()
@@ -1683,7 +1683,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_
 
     /* "cssdbpy/pool.pyx":39
  * 
- *     def __del__(self):
+ *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):             # <<<<<<<<<<<<<<
  *             connection = self.__buffer.pop(0)
  *             connection.close()
@@ -1701,7 +1701,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_
   /* "cssdbpy/pool.pyx":38
  *         return result
  * 
- *     def __del__(self):             # <<<<<<<<<<<<<<
+ *     def __cdel__(self):             # <<<<<<<<<<<<<<
  *         for x in xrange(0, self.lenght):
  *             connection = self.__buffer.pop(0)
  */
@@ -1714,7 +1714,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__del__(struct __pyx_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cssdbpy.pool.PoolConnection.__del__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cssdbpy.pool.PoolConnection.__cdel__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_x);
@@ -1783,7 +1783,7 @@ static PyMethodDef __pyx_methods_7cssdbpy_4pool_PoolConnection[] = {
   {"_get_connection", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_3_get_connection, METH_NOARGS, 0},
   {"_return_connection", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_5_return_connection, METH_O, 0},
   {"execute", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__del__", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__del__, METH_NOARGS, 0},
+  {"__cdel__", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
