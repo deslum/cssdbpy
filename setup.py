@@ -10,15 +10,17 @@ except ImportError:
 
 if have_cython:
     ext_modules = [Extension("cssdbpy.cssdbpy", ["cssdbpy/cssdbpy.pyx"]),
+                   Extension("cssdbpy.pool", ["cssdbpy/pool.pyx"]),
                    ]
     cmdclass = {'build_ext': build_ext}
 else:
     cmdclass = {}
     ext_modules = [Extension("cssdbpy.cssdbpy", ["cssdbpy/cssdbpy.c"]),
+                    Extension("cssdbpy.pool", ["cssdbpy/pool.c"]),
                    ]
 setup(
     name='cssdbpy',
-    version='0.1',
+    version='0.1.1',
     packages=['cssdbpy'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,

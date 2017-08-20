@@ -1,4 +1,5 @@
 import socket
+from multiprocessing import Lock
 
 DEF SEND_TEMPLATE = b'{}\n{}\n'
 DEF END_SEND = b'\n'
