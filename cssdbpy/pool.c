@@ -459,11 +459,19 @@ struct __pyx_obj_7cssdbpy_4pool_PoolConnection;
  */
 struct __pyx_obj_7cssdbpy_4pool_PoolConnection {
   PyObject_HEAD
+  struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection *__pyx_vtab;
   PyObject *__pyx___buffer;
   int __pyx___lenght;
   PyObject *__pyx___lock;
 };
 
+
+
+struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection {
+  PyObject *(*_get_connection)(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *);
+  PyObject *(*_return_connection)(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *, PyObject *);
+};
+static struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection *__pyx_vtabptr_7cssdbpy_4pool_PoolConnection;
 
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY
@@ -648,6 +656,8 @@ static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t
         __Pyx__PyObject_PopIndex(L, py_ix))
 #endif
 
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
 static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
@@ -679,6 +689,8 @@ static int __Pyx_check_binary_version(void);
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static PyObject *__pyx_f_7cssdbpy_4pool_14PoolConnection__get_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto*/
+static PyObject *__pyx_f_7cssdbpy_4pool_14PoolConnection__return_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_connection); /* proto*/
 
 /* Module declarations from 'cssdbpy.pool' */
 static PyTypeObject *__pyx_ptype_7cssdbpy_4pool_PoolConnection = 0;
@@ -686,6 +698,7 @@ static PyTypeObject *__pyx_ptype_7cssdbpy_4pool_PoolConnection = 0;
 int __pyx_module_is_main_cssdbpy__pool = 0;
 
 /* Implementation of 'cssdbpy.pool' */
+static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_xrange;
 static char __pyx_k_pop[] = "pop";
 static char __pyx_k_Lock[] = "Lock";
@@ -705,9 +718,8 @@ static char __pyx_k_release[] = "release";
 static char __pyx_k_password[] = "password";
 static char __pyx_k_127_0_0_1[] = "127.0.0.1";
 static char __pyx_k_Connection[] = "Connection";
-static char __pyx_k_get_connection[] = "_get_connection";
+static char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static char __pyx_k_multiprocessing[] = "multiprocessing";
-static char __pyx_k_return_connection[] = "_return_connection";
 static PyObject *__pyx_kp_u_127_0_0_1;
 static PyObject *__pyx_n_s_Connection;
 static PyObject *__pyx_n_s_Lock;
@@ -715,7 +727,6 @@ static PyObject *__pyx_n_s_acquire;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_credis;
 static PyObject *__pyx_n_s_execute;
-static PyObject *__pyx_n_s_get_connection;
 static PyObject *__pyx_n_s_host;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_lenght;
@@ -724,16 +735,14 @@ static PyObject *__pyx_n_s_multiprocessing;
 static PyObject *__pyx_n_s_password;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_port;
+static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_release;
-static PyObject *__pyx_n_s_return_connection;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_xrange;
 static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_lenght, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_connection); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2execute(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_7cssdbpy_4pool_PoolConnection(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_pop = {0, &__pyx_n_s_pop, 0, 0, 0};
 static PyObject *__pyx_int_0;
@@ -833,7 +842,6 @@ static int __pyx_pw_7cssdbpy_4pool_14PoolConnection_1__cinit__(PyObject *__pyx_v
 
 static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_lenght, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password) {
   CYTHON_UNUSED PyObject *__pyx_v_x = NULL;
-  PyObject *__pyx_v_connection = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -870,7 +878,7 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
  *         self.__buffer = list()
  *         self.__lenght = 0             # <<<<<<<<<<<<<<
  *         self.__lock = Lock()
- *         for x in xrange(0, lenght):
+ *         for x in range(0, lenght):
  */
   __pyx_v_self->__pyx___lenght = 0;
 
@@ -878,8 +886,8 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
  *         self.__buffer = list()
  *         self.__lenght = 0
  *         self.__lock = Lock()             # <<<<<<<<<<<<<<
- *         for x in xrange(0, lenght):
- *             connection = Connection(host, port, password)
+ *         for x in range(0, lenght):
+ *             self.__buffer.append(Connection(host, port, password))
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Lock); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -910,9 +918,9 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
   /* "cssdbpy/pool.pyx":14
  *         self.__lenght = 0
  *         self.__lock = Lock()
- *         for x in xrange(0, lenght):             # <<<<<<<<<<<<<<
- *             connection = Connection(host, port, password)
- *             self.__buffer.append(connection)
+ *         for x in range(0, lenght):             # <<<<<<<<<<<<<<
+ *             self.__buffer.append(Connection(host, port, password))
+ *             self.__lenght = len(self.__buffer)
  */
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -922,7 +930,7 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
   __Pyx_INCREF(__pyx_v_lenght);
   __Pyx_GIVEREF(__pyx_v_lenght);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_lenght);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
@@ -970,11 +978,15 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
 
     /* "cssdbpy/pool.pyx":15
  *         self.__lock = Lock()
- *         for x in xrange(0, lenght):
- *             connection = Connection(host, port, password)             # <<<<<<<<<<<<<<
- *             self.__buffer.append(connection)
+ *         for x in range(0, lenght):
+ *             self.__buffer.append(Connection(host, port, password))             # <<<<<<<<<<<<<<
  *             self.__lenght = len(self.__buffer)
+ * 
  */
+    if (unlikely(__pyx_v_self->__pyx___buffer == Py_None)) {
+      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "append");
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
     __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_Connection); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_6 = NULL;
@@ -1007,45 +1019,32 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_connection, __pyx_t_2);
-    __pyx_t_2 = 0;
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_self->__pyx___buffer, __pyx_t_2); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "cssdbpy/pool.pyx":16
- *         for x in xrange(0, lenght):
- *             connection = Connection(host, port, password)
- *             self.__buffer.append(connection)             # <<<<<<<<<<<<<<
- *             self.__lenght = len(self.__buffer)
- * 
- */
-    if (unlikely(__pyx_v_self->__pyx___buffer == Py_None)) {
-      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "append");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_self->__pyx___buffer, __pyx_v_connection); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-
-    /* "cssdbpy/pool.pyx":17
- *             connection = Connection(host, port, password)
- *             self.__buffer.append(connection)
+ *         for x in range(0, lenght):
+ *             self.__buffer.append(Connection(host, port, password))
  *             self.__lenght = len(self.__buffer)             # <<<<<<<<<<<<<<
  * 
- *     def _get_connection(self):
+ *     cdef _get_connection(self):
  */
     __pyx_t_2 = __pyx_v_self->__pyx___buffer;
     __Pyx_INCREF(__pyx_t_2);
     if (unlikely(__pyx_t_2 == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_t_7 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_self->__pyx___lenght = __pyx_t_7;
 
     /* "cssdbpy/pool.pyx":14
  *         self.__lenght = 0
  *         self.__lock = Lock()
- *         for x in xrange(0, lenght):             # <<<<<<<<<<<<<<
- *             connection = Connection(host, port, password)
- *             self.__buffer.append(connection)
+ *         for x in range(0, lenght):             # <<<<<<<<<<<<<<
+ *             self.__buffer.append(Connection(host, port, password))
+ *             self.__lenght = len(self.__buffer)
  */
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1071,33 +1070,19 @@ static int __pyx_pf_7cssdbpy_4pool_14PoolConnection___cinit__(struct __pyx_obj_7
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_x);
-  __Pyx_XDECREF(__pyx_v_connection);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cssdbpy/pool.pyx":19
+/* "cssdbpy/pool.pyx":18
  *             self.__lenght = len(self.__buffer)
  * 
- *     def _get_connection(self):             # <<<<<<<<<<<<<<
+ *     cdef _get_connection(self):             # <<<<<<<<<<<<<<
  *         self.__lock.acquire()
  *         connection = self.__buffer.pop()
  */
 
-/* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_3_get_connection(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_3_get_connection(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_get_connection (wrapper)", 0);
-  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
+static PyObject *__pyx_f_7cssdbpy_4pool_14PoolConnection__get_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
   PyObject *__pyx_v_connection = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1110,14 +1095,14 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_get_connection", 0);
 
-  /* "cssdbpy/pool.pyx":20
+  /* "cssdbpy/pool.pyx":19
  * 
- *     def _get_connection(self):
+ *     cdef _get_connection(self):
  *         self.__lock.acquire()             # <<<<<<<<<<<<<<
  *         connection = self.__buffer.pop()
  *         self.__lenght = len(self.__buffer)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_acquire); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_acquire); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1130,17 +1115,17 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":21
- *     def _get_connection(self):
+  /* "cssdbpy/pool.pyx":20
+ *     cdef _get_connection(self):
  *         self.__lock.acquire()
  *         connection = self.__buffer.pop()             # <<<<<<<<<<<<<<
  *         self.__lenght = len(self.__buffer)
@@ -1148,14 +1133,14 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
  */
   if (unlikely(__pyx_v_self->__pyx___buffer == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "pop");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_1 = __Pyx_PyList_Pop(__pyx_v_self->__pyx___buffer); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyList_Pop(__pyx_v_self->__pyx___buffer); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_connection = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":22
+  /* "cssdbpy/pool.pyx":21
  *         self.__lock.acquire()
  *         connection = self.__buffer.pop()
  *         self.__lenght = len(self.__buffer)             # <<<<<<<<<<<<<<
@@ -1166,20 +1151,20 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_4 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_4 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_4 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx___lenght = __pyx_t_4;
 
-  /* "cssdbpy/pool.pyx":23
+  /* "cssdbpy/pool.pyx":22
  *         connection = self.__buffer.pop()
  *         self.__lenght = len(self.__buffer)
  *         self.__lock.release()             # <<<<<<<<<<<<<<
  *         return connection
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_release); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_release); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1192,31 +1177,31 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":24
+  /* "cssdbpy/pool.pyx":23
  *         self.__lenght = len(self.__buffer)
  *         self.__lock.release()
  *         return connection             # <<<<<<<<<<<<<<
  * 
- *     def _return_connection(self, connection):
+ *     cdef _return_connection(self, connection):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_connection);
   __pyx_r = __pyx_v_connection;
   goto __pyx_L0;
 
-  /* "cssdbpy/pool.pyx":19
+  /* "cssdbpy/pool.pyx":18
  *             self.__lenght = len(self.__buffer)
  * 
- *     def _get_connection(self):             # <<<<<<<<<<<<<<
+ *     cdef _get_connection(self):             # <<<<<<<<<<<<<<
  *         self.__lock.acquire()
  *         connection = self.__buffer.pop()
  */
@@ -1227,7 +1212,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("cssdbpy.pool.PoolConnection._get_connection", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_connection);
   __Pyx_XGIVEREF(__pyx_r);
@@ -1235,28 +1220,15 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2_get_connection(struc
   return __pyx_r;
 }
 
-/* "cssdbpy/pool.pyx":26
+/* "cssdbpy/pool.pyx":25
  *         return connection
  * 
- *     def _return_connection(self, connection):             # <<<<<<<<<<<<<<
+ *     cdef _return_connection(self, connection):             # <<<<<<<<<<<<<<
  *         self.__lock.acquire()
  *         self.__buffer.append(connection)
  */
 
-/* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_5_return_connection(PyObject *__pyx_v_self, PyObject *__pyx_v_connection); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_5_return_connection(PyObject *__pyx_v_self, PyObject *__pyx_v_connection) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_return_connection (wrapper)", 0);
-  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self), ((PyObject *)__pyx_v_connection));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_connection) {
+static PyObject *__pyx_f_7cssdbpy_4pool_14PoolConnection__return_connection(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_connection) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1269,14 +1241,14 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_return_connection", 0);
 
-  /* "cssdbpy/pool.pyx":27
+  /* "cssdbpy/pool.pyx":26
  * 
- *     def _return_connection(self, connection):
+ *     cdef _return_connection(self, connection):
  *         self.__lock.acquire()             # <<<<<<<<<<<<<<
  *         self.__buffer.append(connection)
  *         self.__lenght = len(self.__buffer)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_acquire); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_acquire); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1289,17 +1261,17 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":28
- *     def _return_connection(self, connection):
+  /* "cssdbpy/pool.pyx":27
+ *     cdef _return_connection(self, connection):
  *         self.__lock.acquire()
  *         self.__buffer.append(connection)             # <<<<<<<<<<<<<<
  *         self.__lenght = len(self.__buffer)
@@ -1307,11 +1279,11 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
  */
   if (unlikely(__pyx_v_self->__pyx___buffer == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "append");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->__pyx___buffer, __pyx_v_connection); if (unlikely(__pyx_t_4 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->__pyx___buffer, __pyx_v_connection); if (unlikely(__pyx_t_4 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "cssdbpy/pool.pyx":29
+  /* "cssdbpy/pool.pyx":28
  *         self.__lock.acquire()
  *         self.__buffer.append(connection)
  *         self.__lenght = len(self.__buffer)             # <<<<<<<<<<<<<<
@@ -1322,20 +1294,20 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx___lenght = __pyx_t_5;
 
-  /* "cssdbpy/pool.pyx":30
+  /* "cssdbpy/pool.pyx":29
  *         self.__buffer.append(connection)
  *         self.__lenght = len(self.__buffer)
  *         self.__lock.release()             # <<<<<<<<<<<<<<
  * 
  *     def execute(self, *args):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_release); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->__pyx___lock, __pyx_n_s_release); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1348,19 +1320,19 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":26
+  /* "cssdbpy/pool.pyx":25
  *         return connection
  * 
- *     def _return_connection(self, connection):             # <<<<<<<<<<<<<<
+ *     cdef _return_connection(self, connection):             # <<<<<<<<<<<<<<
  *         self.__lock.acquire()
  *         self.__buffer.append(connection)
  */
@@ -1373,14 +1345,14 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("cssdbpy.pool.PoolConnection._return_connection", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cssdbpy/pool.pyx":32
+/* "cssdbpy/pool.pyx":31
  *         self.__lock.release()
  * 
  *     def execute(self, *args):             # <<<<<<<<<<<<<<
@@ -1389,8 +1361,8 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4_return_connection(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_3execute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_3execute(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_args = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -1398,7 +1370,7 @@ static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute(PyObject *__p
   if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "execute", 0))) return NULL;
   __Pyx_INCREF(__pyx_args);
   __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self), __pyx_v_args);
+  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_2execute(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self), __pyx_v_args);
 
   /* function exit code */
   __Pyx_XDECREF(__pyx_v_args);
@@ -1406,102 +1378,57 @@ static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute(PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_args) {
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_2execute(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self, PyObject *__pyx_v_args) {
   PyObject *__pyx_v_conn = NULL;
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute", 0);
 
-  /* "cssdbpy/pool.pyx":33
+  /* "cssdbpy/pool.pyx":32
  * 
  *     def execute(self, *args):
  *         conn = self._get_connection()             # <<<<<<<<<<<<<<
  *         result = conn.execute(*args)
  *         self._return_connection(conn)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_connection); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
+  __pyx_t_1 = ((struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection *)__pyx_v_self->__pyx_vtab)->_get_connection(__pyx_v_self); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_conn = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/pool.pyx":34
+  /* "cssdbpy/pool.pyx":33
  *     def execute(self, *args):
  *         conn = self._get_connection()
  *         result = conn.execute(*args)             # <<<<<<<<<<<<<<
  *         self._return_connection(conn)
  *         return result
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_execute); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_execute); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_result = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cssdbpy/pool.pyx":35
+  /* "cssdbpy/pool.pyx":34
  *         conn = self._get_connection()
  *         result = conn.execute(*args)
  *         self._return_connection(conn)             # <<<<<<<<<<<<<<
  *         return result
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_return_connection); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  if (!__pyx_t_3) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_conn); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-  } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
-    __Pyx_INCREF(__pyx_v_conn);
-    __Pyx_GIVEREF(__pyx_v_conn);
-    PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_conn);
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = ((struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection *)__pyx_v_self->__pyx_vtab)->_return_connection(__pyx_v_self, __pyx_v_conn); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cssdbpy/pool.pyx":36
+  /* "cssdbpy/pool.pyx":35
  *         result = conn.execute(*args)
  *         self._return_connection(conn)
  *         return result             # <<<<<<<<<<<<<<
@@ -1513,7 +1440,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "cssdbpy/pool.pyx":32
+  /* "cssdbpy/pool.pyx":31
  *         self.__lock.release()
  * 
  *     def execute(self, *args):             # <<<<<<<<<<<<<<
@@ -1525,8 +1452,6 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("cssdbpy.pool.PoolConnection.execute", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -1537,7 +1462,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
   return __pyx_r;
 }
 
-/* "cssdbpy/pool.pyx":38
+/* "cssdbpy/pool.pyx":37
  *         return result
  * 
  *     def __cdel__(self):             # <<<<<<<<<<<<<<
@@ -1546,19 +1471,19 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_6execute(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_5__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_4pool_14PoolConnection_5__cdel__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cdel__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7cssdbpy_4pool_14PoolConnection_4__cdel__(((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
+static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_4__cdel__(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *__pyx_v_self) {
   CYTHON_UNUSED PyObject *__pyx_v_x = NULL;
   PyObject *__pyx_v_connection = NULL;
   PyObject *__pyx_r = NULL;
@@ -1574,16 +1499,16 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cdel__", 0);
 
-  /* "cssdbpy/pool.pyx":39
+  /* "cssdbpy/pool.pyx":38
  * 
  *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):             # <<<<<<<<<<<<<<
  *             connection = self.__buffer.pop(0)
  *             connection.close()
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lenght); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lenght); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -1591,16 +1516,16 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -1608,17 +1533,17 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -1628,7 +1553,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -1637,7 +1562,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
     __Pyx_XDECREF_SET(__pyx_v_x, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cssdbpy/pool.pyx":40
+    /* "cssdbpy/pool.pyx":39
  *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):
  *             connection = self.__buffer.pop(0)             # <<<<<<<<<<<<<<
@@ -1646,20 +1571,20 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
  */
     if (unlikely(__pyx_v_self->__pyx___buffer == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "pop");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_t_1 = __Pyx_PyList_PopIndex(__pyx_v_self->__pyx___buffer, __pyx_int_0, 0, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyList_PopIndex(__pyx_v_self->__pyx___buffer, __pyx_int_0, 0, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_connection, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cssdbpy/pool.pyx":41
+    /* "cssdbpy/pool.pyx":40
  *         for x in xrange(0, self.lenght):
  *             connection = self.__buffer.pop(0)
  *             connection.close()             # <<<<<<<<<<<<<<
  *         self.__lenght = 0
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_connection, __pyx_n_s_close); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_connection, __pyx_n_s_close); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_5))) {
@@ -1672,16 +1597,16 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
       }
     }
     if (__pyx_t_6) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     } else {
-      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cssdbpy/pool.pyx":39
+    /* "cssdbpy/pool.pyx":38
  * 
  *     def __cdel__(self):
  *         for x in xrange(0, self.lenght):             # <<<<<<<<<<<<<<
@@ -1691,14 +1616,14 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cssdbpy/pool.pyx":42
+  /* "cssdbpy/pool.pyx":41
  *             connection = self.__buffer.pop(0)
  *             connection.close()
  *         self.__lenght = 0             # <<<<<<<<<<<<<<
  */
   __pyx_v_self->__pyx___lenght = 0;
 
-  /* "cssdbpy/pool.pyx":38
+  /* "cssdbpy/pool.pyx":37
  *         return result
  * 
  *     def __cdel__(self):             # <<<<<<<<<<<<<<
@@ -1723,6 +1648,7 @@ static PyObject *__pyx_pf_7cssdbpy_4pool_14PoolConnection_8__cdel__(struct __pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+static struct __pyx_vtabstruct_7cssdbpy_4pool_PoolConnection __pyx_vtable_7cssdbpy_4pool_PoolConnection;
 
 static PyObject *__pyx_tp_new_7cssdbpy_4pool_PoolConnection(PyTypeObject *t, PyObject *a, PyObject *k) {
   struct __pyx_obj_7cssdbpy_4pool_PoolConnection *p;
@@ -1734,6 +1660,7 @@ static PyObject *__pyx_tp_new_7cssdbpy_4pool_PoolConnection(PyTypeObject *t, PyO
   }
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_7cssdbpy_4pool_PoolConnection *)o);
+  p->__pyx_vtab = __pyx_vtabptr_7cssdbpy_4pool_PoolConnection;
   p->__pyx___buffer = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->__pyx___lock = Py_None; Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_7cssdbpy_4pool_14PoolConnection_1__cinit__(o, a, k) < 0)) {
@@ -1780,10 +1707,8 @@ static int __pyx_tp_clear_7cssdbpy_4pool_PoolConnection(PyObject *o) {
 }
 
 static PyMethodDef __pyx_methods_7cssdbpy_4pool_PoolConnection[] = {
-  {"_get_connection", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_3_get_connection, METH_NOARGS, 0},
-  {"_return_connection", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_5_return_connection, METH_O, 0},
-  {"execute", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_7execute, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__cdel__", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_9__cdel__, METH_NOARGS, 0},
+  {"execute", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_3execute, METH_VARARGS|METH_KEYWORDS, 0},
+  {"__cdel__", (PyCFunction)__pyx_pw_7cssdbpy_4pool_14PoolConnection_5__cdel__, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -1875,7 +1800,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_credis, __pyx_k_credis, sizeof(__pyx_k_credis), 0, 0, 1, 1},
   {&__pyx_n_s_execute, __pyx_k_execute, sizeof(__pyx_k_execute), 0, 0, 1, 1},
-  {&__pyx_n_s_get_connection, __pyx_k_get_connection, sizeof(__pyx_k_get_connection), 0, 0, 1, 1},
   {&__pyx_n_s_host, __pyx_k_host, sizeof(__pyx_k_host), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_lenght, __pyx_k_lenght, sizeof(__pyx_k_lenght), 0, 0, 1, 1},
@@ -1884,18 +1808,19 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_password, __pyx_k_password, sizeof(__pyx_k_password), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_port, __pyx_k_port, sizeof(__pyx_k_port), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_release, __pyx_k_release, sizeof(__pyx_k_release), 0, 0, 1, 1},
-  {&__pyx_n_s_return_connection, __pyx_k_return_connection, sizeof(__pyx_k_return_connection), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
   return 0;
   __pyx_L1_error:;
@@ -2006,8 +1931,12 @@ PyMODINIT_FUNC PyInit_pool(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
+  __pyx_vtabptr_7cssdbpy_4pool_PoolConnection = &__pyx_vtable_7cssdbpy_4pool_PoolConnection;
+  __pyx_vtable_7cssdbpy_4pool_PoolConnection._get_connection = (PyObject *(*)(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *))__pyx_f_7cssdbpy_4pool_14PoolConnection__get_connection;
+  __pyx_vtable_7cssdbpy_4pool_PoolConnection._return_connection = (PyObject *(*)(struct __pyx_obj_7cssdbpy_4pool_PoolConnection *, PyObject *))__pyx_f_7cssdbpy_4pool_14PoolConnection__return_connection;
   if (PyType_Ready(&__pyx_type_7cssdbpy_4pool_PoolConnection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_7cssdbpy_4pool_PoolConnection.tp_print = 0;
+  if (__Pyx_SetVtable(__pyx_type_7cssdbpy_4pool_PoolConnection.tp_dict, __pyx_vtabptr_7cssdbpy_4pool_PoolConnection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (PyObject_SetAttrString(__pyx_m, "PoolConnection", (PyObject *)&__pyx_type_7cssdbpy_4pool_PoolConnection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_7cssdbpy_4pool_PoolConnection = &__pyx_type_7cssdbpy_4pool_PoolConnection;
   /*--- Type import code ---*/
@@ -2542,6 +2471,23 @@ static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t
     }
 }
 #endif
+
+static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
+#else
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
+#endif
+    if (!ob)
+        goto bad;
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
+    return 0;
+bad:
+    Py_XDECREF(ob);
+    return -1;
+}
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
     PyObject *empty_list = 0;

@@ -11,19 +11,18 @@ cdef class PoolConnection(object):
         self.__buffer = list()
         self.__lenght = 0
         self.__lock = Lock()
-        for x in xrange(0, lenght):
-            connection = Connection(host, port, password)
-            self.__buffer.append(connection)
+        for x in range(0, lenght):
+            self.__buffer.append(Connection(host, port, password))
             self.__lenght = len(self.__buffer)
 
-    def _get_connection(self):
+    cdef _get_connection(self):
         self.__lock.acquire()
         connection = self.__buffer.pop()
         self.__lenght = len(self.__buffer)
         self.__lock.release()
         return connection
 
-    def _return_connection(self, connection):
+    cdef _return_connection(self, connection):
         self.__lock.acquire()
         self.__buffer.append(connection)
         self.__lenght = len(self.__buffer)

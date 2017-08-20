@@ -1,12 +1,13 @@
 import socket
 from multiprocessing import Lock
 
-DEF SEND_TEMPLATE = b'{}\n{}\n'
-DEF END_SEND = b'\n'
+DEF COMMAND_LENGTH_TEMPLATE = b'*{}\n'
+DEF SEND_TEMPLATE = b'${}\n{}\n'
+DEF END_SEND = b'\n\n'
 DEF READ_BUFFER = 1024*8
 DEF OK = b'ok'
 DEF NOT_FOUND = b'not_found'
-DEF END_RESPONSE = b'\n\n'
+DEF END_RESPONSE = b'\n'
 
 
 cdef class Connection(object):
@@ -32,26 +33,34 @@ cdef class Connection(object):
             self.execute('auth', self.password)
 
     def execute(self, *args):
-        cdef list send_object = []
-        for arg in args:
-            send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
-        send_object.append(END_SEND)
-        self.sock.send(''.join(send_object))
+        msg = self._decode_pipeline(*args)
+        self.sock.sendall(''.join(msg))
+        return self._read()
+    
+
+    def execute_pipeline(self, *args):
+        cdef list execute_message = []
+        for subargs in args:
+            subargs = self._decode_pipeline(*subargs)
+            execute_message.extend(subargs)
+        self.sock.sendall(''.join(execute_message))
         return self._read()
 
-    def pipeline(self, *args):
-        cdef list response_object = []
-        for subargs in args:
-            response_object.append(self.execute(*subargs))
-        return response_object
 
+    def _decode_pipeline(self, *args):
+        cdef list send_object = []
+        send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+        for arg in args:
+            send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+        return send_object
 
     cdef _read(self, bytes data = b''):
         cdef bytes tmp = b''
-        while tmp != END_RESPONSE:
+        cdef bytes resp = b''
+        while not resp.endswith(END_RESPONSE):
             resp = self.sock.recv(READ_BUFFER)
-            data += resp
-            tmp = resp[-2:]
+            data +=resp
+        print data
         cdef list ndata = self._parse(data)
         if ndata and len(ndata)<2:
             return int(ndata.pop())

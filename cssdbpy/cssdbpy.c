@@ -222,8 +222,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #define __Pyx_PyNumber_Divide(x,y)         PyNumber_TrueDivide(x,y)
   #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceTrueDivide(x,y)
 #else
-  #define __Pyx_PyNumber_Divide(x,y)         PyNumber_TrueDivide(x,y)
-  #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceTrueDivide(x,y)
+  #define __Pyx_PyNumber_Divide(x,y)         PyNumber_Divide(x,y)
+  #define __Pyx_PyNumber_InPlaceDivide(x,y)  PyNumber_InPlaceDivide(x,y)
 #endif
 
 #ifndef __PYX_EXTERN_C
@@ -451,19 +451,19 @@ static const char *__pyx_f[] = {
 struct __pyx_obj_7cssdbpy_7cssdbpy_Connection;
 struct __pyx_opt_args_7cssdbpy_7cssdbpy_10Connection__read;
 
-/* "cssdbpy/cssdbpy.pyx":49
- * 
+/* "cssdbpy/cssdbpy.pyx":57
+ *         return send_object
  * 
  *     cdef _read(self, bytes data = b''):             # <<<<<<<<<<<<<<
  *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:
+ *         cdef bytes resp = b''
  */
 struct __pyx_opt_args_7cssdbpy_7cssdbpy_10Connection__read {
   int __pyx_n;
   PyObject *data;
 };
 
-/* "cssdbpy/cssdbpy.pyx":12
+/* "cssdbpy/cssdbpy.pyx":13
  * 
  * 
  * cdef class Connection(object):             # <<<<<<<<<<<<<<
@@ -599,6 +599,35 @@ static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
 
 static CYTHON_INLINE int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
 
+#if PY_MAJOR_VERSION < 3
+#define __Pyx_PyString_Join __Pyx_PyBytes_Join
+#define __Pyx_PyBaseString_Join(s, v) (PyUnicode_CheckExact(s) ? PyUnicode_Join(s, v) : __Pyx_PyBytes_Join(s, v))
+#else
+#define __Pyx_PyString_Join PyUnicode_Join
+#define __Pyx_PyBaseString_Join PyUnicode_Join
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION < 3
+    #define __Pyx_PyBytes_Join _PyString_Join
+    #else
+    #define __Pyx_PyBytes_Join _PyBytes_Join
+    #endif
+#else
+static CYTHON_INLINE PyObject* __Pyx_PyBytes_Join(PyObject* sep, PyObject* values);
+#endif
+
+static CYTHON_INLINE int __Pyx_PyList_Extend(PyObject* L, PyObject* v) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyObject* none = _PyList_Extend((PyListObject*)L, v);
+    if (unlikely(!none))
+        return -1;
+    Py_DECREF(none);
+    return 0;
+#else
+    return PyList_SetSlice(L, PY_SSIZE_T_MAX, PY_SSIZE_T_MAX, v);
+#endif
+}
+
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
     PyListObject* L = (PyListObject*) list;
@@ -615,14 +644,10 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
-#include <string.h>
-
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
-        PyObject* obj, Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** py_start, PyObject** py_stop, PyObject** py_slice,
-        int has_cstart, int has_cstop, int wraparound);
+static int __Pyx_PyBytes_SingleTailmatch(PyObject* self, PyObject* arg,
+                                         Py_ssize_t start, Py_ssize_t end, int direction);
+static int __Pyx_PyBytes_Tailmatch(PyObject* self, PyObject* substr,
+                                   Py_ssize_t start, Py_ssize_t end, int direction);
 
 static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name);
 
@@ -679,6 +704,10 @@ static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t
     (unlikely(py_ix == Py_None)) ? __Pyx__PyObject_PopNewIndex(L, to_py_func(ix)) :\
         __Pyx__PyObject_PopIndex(L, py_ix))
 #endif
+
+#include <string.h>
+
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
 
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
 
@@ -762,6 +791,14 @@ static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+static int __Pyx_Print(PyObject*, PyObject *, int);
+#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
+static PyObject* __pyx_print = 0;
+static PyObject* __pyx_print_kwargs = 0;
+#endif
+
+static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -781,22 +818,25 @@ int __pyx_module_is_main_cssdbpy__cssdbpy = 0;
 
 /* Implementation of 'cssdbpy.cssdbpy' */
 static PyObject *__pyx_builtin_filter;
-static char __pyx_k_[] = "{}\n{}\n";
+static char __pyx_k_[] = "";
 static char __pyx_k_0[] = "0";
-static char __pyx_k__2[] = "\n";
-static char __pyx_k__3[] = "";
-static char __pyx_k__4[] = "\n\n";
+static char __pyx_k__2[] = "*{}\n";
+static char __pyx_k__3[] = "${}\n{}\n";
+static char __pyx_k__4[] = "\n";
 static char __pyx_k_ok[] = "ok";
+static char __pyx_k_end[] = "end";
 static char __pyx_k_pop[] = "pop";
 static char __pyx_k_Lock[] = "Lock";
 static char __pyx_k_auth[] = "auth";
+static char __pyx_k_file[] = "file";
 static char __pyx_k_host[] = "host";
+static char __pyx_k_join[] = "join";
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_port[] = "port";
 static char __pyx_k_recv[] = "recv";
-static char __pyx_k_send[] = "send";
 static char __pyx_k_test[] = "__test__";
 static char __pyx_k_close[] = "close";
+static char __pyx_k_print[] = "print";
 static char __pyx_k_split[] = "split";
 static char __pyx_k_filter[] = "filter";
 static char __pyx_k_format[] = "format";
@@ -805,6 +845,7 @@ static char __pyx_k_socket[] = "socket";
 static char __pyx_k_AF_INET[] = "AF_INET";
 static char __pyx_k_connect[] = "_connect";
 static char __pyx_k_execute[] = "execute";
+static char __pyx_k_sendall[] = "sendall";
 static char __pyx_k_password[] = "password";
 static char __pyx_k_127_0_0_1[] = "127.0.0.1";
 static char __pyx_k_connect_2[] = "connect";
@@ -815,9 +856,11 @@ static char __pyx_k_IPPROTO_TCP[] = "IPPROTO_TCP";
 static char __pyx_k_SOCK_STREAM[] = "SOCK_STREAM";
 static char __pyx_k_TCP_NODELAY[] = "TCP_NODELAY";
 static char __pyx_k_cssdbpy_cssdbpy[] = "cssdbpy.cssdbpy";
+static char __pyx_k_decode_pipeline[] = "_decode_pipeline";
 static char __pyx_k_multiprocessing[] = "multiprocessing";
 static char __pyx_k_Connection__parse_locals_lambda[] = "Connection._parse.<locals>.<lambda>";
 static PyObject *__pyx_kp_b_;
+static PyObject *__pyx_kp_s_;
 static PyObject *__pyx_kp_b_0;
 static PyObject *__pyx_kp_b_127_0_0_1;
 static PyObject *__pyx_n_s_AF_INET;
@@ -828,18 +871,21 @@ static PyObject *__pyx_n_s_SOCK_STREAM;
 static PyObject *__pyx_n_s_TCP_NODELAY;
 static PyObject *__pyx_kp_b__2;
 static PyObject *__pyx_kp_b__3;
-static PyObject *__pyx_kp_u__3;
 static PyObject *__pyx_kp_b__4;
-static PyObject *__pyx_n_u_auth;
+static PyObject *__pyx_n_s_auth;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_connect;
 static PyObject *__pyx_n_s_connect_2;
 static PyObject *__pyx_n_s_cssdbpy_cssdbpy;
+static PyObject *__pyx_n_s_decode_pipeline;
+static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_execute;
+static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_filter;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_host;
 static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_n_s_join;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_multiprocessing;
 static PyObject *__pyx_n_b_not_found;
@@ -847,9 +893,10 @@ static PyObject *__pyx_n_b_ok;
 static PyObject *__pyx_n_s_password;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_port;
+static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_recv;
-static PyObject *__pyx_n_s_send;
+static PyObject *__pyx_n_s_sendall;
 static PyObject *__pyx_n_s_setsockopt;
 static PyObject *__pyx_n_s_socket;
 static PyObject *__pyx_n_s_split;
@@ -857,22 +904,21 @@ static PyObject *__pyx_n_s_test;
 static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_host, PyObject *__pyx_v_port, PyObject *__pyx_v_password); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_2_connect(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_4execute(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6execute_pipeline(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8_decode_pipeline(CYTHON_UNUSED struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_10__del__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_7cssdbpy_7cssdbpy_Connection(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_pop = {0, &__pyx_n_s_pop, 0, 0, 0};
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_8192;
 static PyObject *__pyx_int_8888;
-static PyObject *__pyx_int_neg_2;
-static PyObject *__pyx_slice__6;
-static PyObject *__pyx_slice__8;
+static PyObject *__pyx_slice__7;
 static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__6;
 
-/* "cssdbpy/cssdbpy.pyx":20
+/* "cssdbpy/cssdbpy.pyx":21
  * 
  * 
  *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
@@ -927,7 +973,7 @@ static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__cinit__(PyObject *__pyx_v_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -944,7 +990,7 @@ static int __pyx_pw_7cssdbpy_7cssdbpy_10Connection_1__cinit__(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -967,14 +1013,14 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7c
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":21
+  /* "cssdbpy/cssdbpy.pyx":22
  * 
  *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):
  *         self.host = host             # <<<<<<<<<<<<<<
  *         self.port = port
  *         self.password = password
  */
-  if (!(likely(PyBytes_CheckExact(__pyx_v_host))||((__pyx_v_host) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_host)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(PyBytes_CheckExact(__pyx_v_host))||((__pyx_v_host) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_host)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_1 = __pyx_v_host;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -983,24 +1029,24 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7c
   __pyx_v_self->host = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":22
+  /* "cssdbpy/cssdbpy.pyx":23
  *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):
  *         self.host = host
  *         self.port = port             # <<<<<<<<<<<<<<
  *         self.password = password
  *         self.sock = None
  */
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_port); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_port); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->port = __pyx_t_2;
 
-  /* "cssdbpy/cssdbpy.pyx":23
+  /* "cssdbpy/cssdbpy.pyx":24
  *         self.host = host
  *         self.port = port
  *         self.password = password             # <<<<<<<<<<<<<<
  *         self.sock = None
  *         self._connect()
  */
-  if (!(likely(PyBytes_CheckExact(__pyx_v_password))||((__pyx_v_password) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_password)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(PyBytes_CheckExact(__pyx_v_password))||((__pyx_v_password) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_password)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_1 = __pyx_v_password;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -1009,7 +1055,7 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7c
   __pyx_v_self->password = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":24
+  /* "cssdbpy/cssdbpy.pyx":25
  *         self.port = port
  *         self.password = password
  *         self.sock = None             # <<<<<<<<<<<<<<
@@ -1022,18 +1068,18 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7c
   __Pyx_DECREF(__pyx_v_self->sock);
   __pyx_v_self->sock = Py_None;
 
-  /* "cssdbpy/cssdbpy.pyx":25
+  /* "cssdbpy/cssdbpy.pyx":26
  *         self.password = password
  *         self.sock = None
  *         self._connect()             # <<<<<<<<<<<<<<
  * 
  *     cpdef _connect(self):
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_connect(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_connect(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":20
+  /* "cssdbpy/cssdbpy.pyx":21
  * 
  * 
  *     def __cinit__(self, host = b'127.0.0.1', port = 8888, password = None):             # <<<<<<<<<<<<<<
@@ -1053,7 +1099,7 @@ static int __pyx_pf_7cssdbpy_7cssdbpy_10Connection___cinit__(struct __pyx_obj_7c
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":27
+/* "cssdbpy/cssdbpy.pyx":28
  *         self._connect()
  * 
  *     cpdef _connect(self):             # <<<<<<<<<<<<<<
@@ -1081,7 +1127,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
   if (unlikely(__pyx_skip_dispatch)) ;
   /* Check if overridden in Python */
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_connect); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_connect); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_3_connect)) {
       __Pyx_XDECREF(__pyx_r);
@@ -1097,10 +1143,10 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
         }
       }
       if (__pyx_t_4) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       } else {
-        __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1112,26 +1158,26 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cssdbpy/cssdbpy.pyx":28
+  /* "cssdbpy/cssdbpy.pyx":29
  * 
  *     cpdef _connect(self):
  *         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)             # <<<<<<<<<<<<<<
  *         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
  *         self.sock.connect((self.host, self.port))
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_socket); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_socket); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_AF_INET); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_AF_INET); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_SOCK_STREAM); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_SOCK_STREAM); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -1146,7 +1192,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
       __pyx_t_6 = 1;
     }
   }
-  __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   if (__pyx_t_2) {
     __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -1157,7 +1203,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
   PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_5);
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1167,23 +1213,23 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
   __pyx_v_self->sock = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":29
+  /* "cssdbpy/cssdbpy.pyx":30
  *     cpdef _connect(self):
  *         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
  *         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)             # <<<<<<<<<<<<<<
  *         self.sock.connect((self.host, self.port))
  *         if self.password:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_setsockopt); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_setsockopt); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_IPPROTO_TCP); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_IPPROTO_TCP); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_socket); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_TCP_NODELAY); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_TCP_NODELAY); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = NULL;
@@ -1198,7 +1244,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
       __pyx_t_6 = 1;
     }
   }
-  __pyx_t_2 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (__pyx_t_7) {
     __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -1212,24 +1258,24 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
   PyTuple_SET_ITEM(__pyx_t_2, 2+__pyx_t_6, __pyx_int_1);
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":30
+  /* "cssdbpy/cssdbpy.pyx":31
  *         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
  *         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
  *         self.sock.connect((self.host, self.port))             # <<<<<<<<<<<<<<
  *         if self.password:
  *             self.execute('auth', self.password)
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_connect_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_connect_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->port); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->port); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_self->host);
   __Pyx_GIVEREF(__pyx_v_self->host);
@@ -1248,24 +1294,24 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
     }
   }
   if (!__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2); __pyx_t_2 = NULL;
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":31
+  /* "cssdbpy/cssdbpy.pyx":32
  *         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
  *         self.sock.connect((self.host, self.port))
  *         if self.password:             # <<<<<<<<<<<<<<
@@ -1275,14 +1321,14 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
   __pyx_t_8 = (__pyx_v_self->password != Py_None) && (PyBytes_GET_SIZE(__pyx_v_self->password) != 0);
   if (__pyx_t_8) {
 
-    /* "cssdbpy/cssdbpy.pyx":32
+    /* "cssdbpy/cssdbpy.pyx":33
  *         self.sock.connect((self.host, self.port))
  *         if self.password:
  *             self.execute('auth', self.password)             # <<<<<<<<<<<<<<
  * 
  *     def execute(self, *args):
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_execute); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_execute); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     __pyx_t_6 = 0;
@@ -1296,24 +1342,24 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
         __pyx_t_6 = 1;
       }
     }
-    __pyx_t_4 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5); __pyx_t_5 = NULL;
     }
-    __Pyx_INCREF(__pyx_n_u_auth);
-    __Pyx_GIVEREF(__pyx_n_u_auth);
-    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_n_u_auth);
+    __Pyx_INCREF(__pyx_n_s_auth);
+    __Pyx_GIVEREF(__pyx_n_s_auth);
+    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_6, __pyx_n_s_auth);
     __Pyx_INCREF(__pyx_v_self->password);
     __Pyx_GIVEREF(__pyx_v_self->password);
     PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_6, __pyx_v_self->password);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cssdbpy/cssdbpy.pyx":31
+    /* "cssdbpy/cssdbpy.pyx":32
  *         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
  *         self.sock.connect((self.host, self.port))
  *         if self.password:             # <<<<<<<<<<<<<<
@@ -1322,7 +1368,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(struct __pyx_ob
  */
   }
 
-  /* "cssdbpy/cssdbpy.pyx":27
+  /* "cssdbpy/cssdbpy.pyx":28
  *         self._connect()
  * 
  *     cpdef _connect(self):             # <<<<<<<<<<<<<<
@@ -1370,7 +1416,7 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_2_connect(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_connect", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_7cssdbpy_7cssdbpy_10Connection__connect(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1387,12 +1433,12 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_2_connect(struct __pyx_
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":34
+/* "cssdbpy/cssdbpy.pyx":35
  *             self.execute('auth', self.password)
  * 
  *     def execute(self, *args):             # <<<<<<<<<<<<<<
- *         cdef list send_object = []
- *         for arg in args:
+ *         msg = self._decode_pipeline(*args)
+ *         self.sock.sendall(''.join(msg))
  */
 
 /* Python wrapper */
@@ -1414,223 +1460,130 @@ static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_5execute(PyObject *__py
 }
 
 static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_4execute(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args) {
-  PyObject *__pyx_v_send_object = 0;
-  PyObject *__pyx_v_arg = NULL;
+  PyObject *__pyx_v_msg = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
+  PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  Py_ssize_t __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
-  int __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":35
+  /* "cssdbpy/cssdbpy.pyx":36
  * 
  *     def execute(self, *args):
- *         cdef list send_object = []             # <<<<<<<<<<<<<<
- *         for arg in args:
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+ *         msg = self._decode_pipeline(*args)             # <<<<<<<<<<<<<<
+ *         self.sock.sendall(''.join(msg))
+ *         return self._read()
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode_pipeline); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_send_object = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_msg = __pyx_t_2;
+  __pyx_t_2 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":36
+  /* "cssdbpy/cssdbpy.pyx":37
  *     def execute(self, *args):
- *         cdef list send_object = []
- *         for arg in args:             # <<<<<<<<<<<<<<
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
- *         send_object.append(END_SEND)
+ *         msg = self._decode_pipeline(*args)
+ *         self.sock.sendall(''.join(msg))             # <<<<<<<<<<<<<<
+ *         return self._read()
+ * 
  */
-  __pyx_t_1 = __pyx_v_args; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
-  for (;;) {
-    if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-    #if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_3);
-    #endif
-    __Pyx_XDECREF_SET(__pyx_v_arg, __pyx_t_3);
-    __pyx_t_3 = 0;
-
-    /* "cssdbpy/cssdbpy.pyx":37
- *         cdef list send_object = []
- *         for arg in args:
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))             # <<<<<<<<<<<<<<
- *         send_object.append(END_SEND)
- *         self.sock.send(''.join(send_object))
- */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_b_, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_INCREF(__pyx_v_arg);
-    __Pyx_GIVEREF(__pyx_v_arg);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_arg);
-    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyInt_FromSsize_t(__pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = NULL;
-    __pyx_t_7 = 0;
-    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_5)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_5);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
-        __pyx_t_7 = 1;
-      }
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_sendall); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_PyString_Join(__pyx_kp_s_, __pyx_v_msg); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
     }
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_8);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_5); __pyx_t_5 = NULL;
-    }
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_t_6);
-    __Pyx_INCREF(__pyx_v_arg);
-    __Pyx_GIVEREF(__pyx_v_arg);
-    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_v_arg);
-    __pyx_t_6 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_send_object, __pyx_t_3); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (!__pyx_t_4) {
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "cssdbpy/cssdbpy.pyx":36
- *     def execute(self, *args):
- *         cdef list send_object = []
- *         for arg in args:             # <<<<<<<<<<<<<<
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
- *         send_object.append(END_SEND)
- */
+    __Pyx_GOTREF(__pyx_t_2);
+  } else {
+    __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "cssdbpy/cssdbpy.pyx":38
- *         for arg in args:
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
- *         send_object.append(END_SEND)             # <<<<<<<<<<<<<<
- *         self.sock.send(''.join(send_object))
- *         return self._read()
- */
-  __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_send_object, __pyx_kp_b__2); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-
-  /* "cssdbpy/cssdbpy.pyx":39
- *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
- *         send_object.append(END_SEND)
- *         self.sock.send(''.join(send_object))             # <<<<<<<<<<<<<<
- *         return self._read()
- * 
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_send); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyUnicode_Join(__pyx_kp_u__3, __pyx_v_send_object); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_8)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  if (!__pyx_t_8) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else {
-    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_8); __pyx_t_8 = NULL;
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "cssdbpy/cssdbpy.pyx":40
- *         send_object.append(END_SEND)
- *         self.sock.send(''.join(send_object))
+ *         msg = self._decode_pipeline(*args)
+ *         self.sock.sendall(''.join(msg))
  *         return self._read()             # <<<<<<<<<<<<<<
  * 
- *     def pipeline(self, *args):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_read(__pyx_v_self, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_2 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_read(__pyx_v_self, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cssdbpy/cssdbpy.pyx":34
+  /* "cssdbpy/cssdbpy.pyx":35
  *             self.execute('auth', self.password)
  * 
  *     def execute(self, *args):             # <<<<<<<<<<<<<<
- *         cdef list send_object = []
- *         for arg in args:
+ *         msg = self._decode_pipeline(*args)
+ *         self.sock.sendall(''.join(msg))
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.execute", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_send_object);
-  __Pyx_XDECREF(__pyx_v_arg);
+  __Pyx_XDECREF(__pyx_v_msg);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":42
- *         return self._read()
+/* "cssdbpy/cssdbpy.pyx":41
  * 
- *     def pipeline(self, *args):             # <<<<<<<<<<<<<<
- *         cdef list response_object = []
+ * 
+ *     def execute_pipeline(self, *args):             # <<<<<<<<<<<<<<
+ *         cdef list execute_message = []
  *         for subargs in args:
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7execute_pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7execute_pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_args = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("pipeline (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "pipeline", 0))) return NULL;
+  __Pyx_RefNannySetupContext("execute_pipeline (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "execute_pipeline", 0))) return NULL;
   __Pyx_INCREF(__pyx_args);
   __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self), __pyx_v_args);
+  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection_6execute_pipeline(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self), __pyx_v_args);
 
   /* function exit code */
   __Pyx_XDECREF(__pyx_v_args);
@@ -1638,8 +1591,8 @@ static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7pipeline(PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args) {
-  PyObject *__pyx_v_response_object = 0;
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6execute_pipeline(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args) {
+  PyObject *__pyx_v_execute_message = 0;
   PyObject *__pyx_v_subargs = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1649,87 +1602,138 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(struct __pyx_
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("pipeline", 0);
+  __Pyx_RefNannySetupContext("execute_pipeline", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":43
+  /* "cssdbpy/cssdbpy.pyx":42
  * 
- *     def pipeline(self, *args):
- *         cdef list response_object = []             # <<<<<<<<<<<<<<
+ *     def execute_pipeline(self, *args):
+ *         cdef list execute_message = []             # <<<<<<<<<<<<<<
  *         for subargs in args:
- *             response_object.append(self.execute(*subargs))
+ *             subargs = self._decode_pipeline(*subargs)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_response_object = ((PyObject*)__pyx_t_1);
+  __pyx_v_execute_message = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":44
- *     def pipeline(self, *args):
- *         cdef list response_object = []
+  /* "cssdbpy/cssdbpy.pyx":43
+ *     def execute_pipeline(self, *args):
+ *         cdef list execute_message = []
  *         for subargs in args:             # <<<<<<<<<<<<<<
- *             response_object.append(self.execute(*subargs))
- *         return response_object
+ *             subargs = self._decode_pipeline(*subargs)
+ *             execute_message.extend(subargs)
  */
   __pyx_t_1 = __pyx_v_args; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_subargs, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cssdbpy/cssdbpy.pyx":45
- *         cdef list response_object = []
+    /* "cssdbpy/cssdbpy.pyx":44
+ *         cdef list execute_message = []
  *         for subargs in args:
- *             response_object.append(self.execute(*subargs))             # <<<<<<<<<<<<<<
- *         return response_object
- * 
+ *             subargs = self._decode_pipeline(*subargs)             # <<<<<<<<<<<<<<
+ *             execute_message.extend(subargs)
+ *         self.sock.sendall(''.join(execute_message))
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_execute); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode_pipeline); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PySequence_Tuple(__pyx_v_subargs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PySequence_Tuple(__pyx_v_subargs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_response_object, __pyx_t_5); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF_SET(__pyx_v_subargs, __pyx_t_5);
+    __pyx_t_5 = 0;
 
-    /* "cssdbpy/cssdbpy.pyx":44
- *     def pipeline(self, *args):
- *         cdef list response_object = []
+    /* "cssdbpy/cssdbpy.pyx":45
+ *         for subargs in args:
+ *             subargs = self._decode_pipeline(*subargs)
+ *             execute_message.extend(subargs)             # <<<<<<<<<<<<<<
+ *         self.sock.sendall(''.join(execute_message))
+ *         return self._read()
+ */
+    __pyx_t_6 = __Pyx_PyList_Extend(__pyx_v_execute_message, __pyx_v_subargs); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+    /* "cssdbpy/cssdbpy.pyx":43
+ *     def execute_pipeline(self, *args):
+ *         cdef list execute_message = []
  *         for subargs in args:             # <<<<<<<<<<<<<<
- *             response_object.append(self.execute(*subargs))
- *         return response_object
+ *             subargs = self._decode_pipeline(*subargs)
+ *             execute_message.extend(subargs)
  */
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cssdbpy/cssdbpy.pyx":46
- *         for subargs in args:
- *             response_object.append(self.execute(*subargs))
- *         return response_object             # <<<<<<<<<<<<<<
+ *             subargs = self._decode_pipeline(*subargs)
+ *             execute_message.extend(subargs)
+ *         self.sock.sendall(''.join(execute_message))             # <<<<<<<<<<<<<<
+ *         return self._read()
+ * 
+ */
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_sendall); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = __Pyx_PyString_Join(__pyx_kp_s_, __pyx_v_execute_message); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  if (!__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+  } else {
+    __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_4);
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "cssdbpy/cssdbpy.pyx":47
+ *             execute_message.extend(subargs)
+ *         self.sock.sendall(''.join(execute_message))
+ *         return self._read()             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_response_object);
-  __pyx_r = __pyx_v_response_object;
+  __pyx_t_1 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_read(__pyx_v_self, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cssdbpy/cssdbpy.pyx":42
- *         return self._read()
+  /* "cssdbpy/cssdbpy.pyx":41
  * 
- *     def pipeline(self, *args):             # <<<<<<<<<<<<<<
- *         cdef list response_object = []
+ * 
+ *     def execute_pipeline(self, *args):             # <<<<<<<<<<<<<<
+ *         cdef list execute_message = []
  *         for subargs in args:
  */
 
@@ -1739,28 +1743,245 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_6pipeline(struct __pyx_
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.pipeline", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection.execute_pipeline", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_response_object);
+  __Pyx_XDECREF(__pyx_v_execute_message);
   __Pyx_XDECREF(__pyx_v_subargs);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":49
+/* "cssdbpy/cssdbpy.pyx":50
  * 
+ * 
+ *     def _decode_pipeline(self, *args):             # <<<<<<<<<<<<<<
+ *         cdef list send_object = []
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9_decode_pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9_decode_pipeline(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_decode_pipeline (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "_decode_pipeline", 0))) return NULL;
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection_8_decode_pipeline(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self), __pyx_v_args);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8_decode_pipeline(CYTHON_UNUSED struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, PyObject *__pyx_v_args) {
+  PyObject *__pyx_v_send_object = 0;
+  PyObject *__pyx_v_arg = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_decode_pipeline", 0);
+
+  /* "cssdbpy/cssdbpy.pyx":51
+ * 
+ *     def _decode_pipeline(self, *args):
+ *         cdef list send_object = []             # <<<<<<<<<<<<<<
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ *         for arg in args:
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_send_object = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "cssdbpy/cssdbpy.pyx":52
+ *     def _decode_pipeline(self, *args):
+ *         cdef list send_object = []
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))             # <<<<<<<<<<<<<<
+ *         for arg in args:
+ *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_b__2, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyTuple_GET_SIZE(__pyx_v_args); if (unlikely(__pyx_t_3 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyInt_FromSsize_t(__pyx_t_3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (!__pyx_t_5) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+  } else {
+    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_send_object, __pyx_t_1); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "cssdbpy/cssdbpy.pyx":53
+ *         cdef list send_object = []
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ *         for arg in args:             # <<<<<<<<<<<<<<
+ *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+ *         return send_object
+ */
+  __pyx_t_1 = __pyx_v_args; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
+  for (;;) {
+    if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+    #if CYTHON_COMPILING_IN_CPYTHON
+    __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    #else
+    __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_arg, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "cssdbpy/cssdbpy.pyx":54
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ *         for arg in args:
+ *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))             # <<<<<<<<<<<<<<
+ *         return send_object
+ * 
+ */
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_kp_b__3, __pyx_n_s_format); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_INCREF(__pyx_v_arg);
+    __Pyx_GIVEREF(__pyx_v_arg);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_arg);
+    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_8 = PyObject_Length(__pyx_t_5); if (unlikely(__pyx_t_8 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyInt_FromSsize_t(__pyx_t_8); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__pyx_t_4) {
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_4); __pyx_t_4 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_t_5);
+    __Pyx_INCREF(__pyx_v_arg);
+    __Pyx_GIVEREF(__pyx_v_arg);
+    PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_v_arg);
+    __pyx_t_5 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_send_object, __pyx_t_2); if (unlikely(__pyx_t_7 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "cssdbpy/cssdbpy.pyx":53
+ *         cdef list send_object = []
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ *         for arg in args:             # <<<<<<<<<<<<<<
+ *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+ *         return send_object
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "cssdbpy/cssdbpy.pyx":55
+ *         for arg in args:
+ *             send_object.append(SEND_TEMPLATE.format(len(str(arg)), arg))
+ *         return send_object             # <<<<<<<<<<<<<<
+ * 
+ *     cdef _read(self, bytes data = b''):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_send_object);
+  __pyx_r = __pyx_v_send_object;
+  goto __pyx_L0;
+
+  /* "cssdbpy/cssdbpy.pyx":50
+ * 
+ * 
+ *     def _decode_pipeline(self, *args):             # <<<<<<<<<<<<<<
+ *         cdef list send_object = []
+ *         send_object.append(COMMAND_LENGTH_TEMPLATE.format(len(args)))
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_AddTraceback("cssdbpy.cssdbpy.Connection._decode_pipeline", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_send_object);
+  __Pyx_XDECREF(__pyx_v_arg);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cssdbpy/cssdbpy.pyx":57
+ *         return send_object
  * 
  *     cdef _read(self, bytes data = b''):             # <<<<<<<<<<<<<<
  *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:
+ *         cdef bytes resp = b''
  */
 
 static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self, struct __pyx_opt_args_7cssdbpy_7cssdbpy_10Connection__read *__pyx_optional_args) {
-  PyObject *__pyx_v_data = ((PyObject*)__pyx_kp_b__3);
-  PyObject *__pyx_v_tmp = 0;
-  PyObject *__pyx_v_resp = NULL;
+  PyObject *__pyx_v_data = ((PyObject*)__pyx_kp_b_);
+  CYTHON_UNUSED PyObject *__pyx_v_tmp = 0;
+  PyObject *__pyx_v_resp = 0;
   PyObject *__pyx_v_ndata = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1781,85 +2002,95 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
   }
   __Pyx_INCREF(__pyx_v_data);
 
-  /* "cssdbpy/cssdbpy.pyx":50
+  /* "cssdbpy/cssdbpy.pyx":58
  * 
  *     cdef _read(self, bytes data = b''):
  *         cdef bytes tmp = b''             # <<<<<<<<<<<<<<
- *         while tmp != END_RESPONSE:
- *             resp = self.sock.recv(READ_BUFFER)
+ *         cdef bytes resp = b''
+ *         while not resp.endswith(END_RESPONSE):
  */
-  __Pyx_INCREF(__pyx_kp_b__3);
-  __pyx_v_tmp = __pyx_kp_b__3;
+  __Pyx_INCREF(__pyx_kp_b_);
+  __pyx_v_tmp = __pyx_kp_b_;
 
-  /* "cssdbpy/cssdbpy.pyx":51
+  /* "cssdbpy/cssdbpy.pyx":59
  *     cdef _read(self, bytes data = b''):
  *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:             # <<<<<<<<<<<<<<
+ *         cdef bytes resp = b''             # <<<<<<<<<<<<<<
+ *         while not resp.endswith(END_RESPONSE):
  *             resp = self.sock.recv(READ_BUFFER)
- *             data += resp
+ */
+  __Pyx_INCREF(__pyx_kp_b_);
+  __pyx_v_resp = __pyx_kp_b_;
+
+  /* "cssdbpy/cssdbpy.pyx":60
+ *         cdef bytes tmp = b''
+ *         cdef bytes resp = b''
+ *         while not resp.endswith(END_RESPONSE):             # <<<<<<<<<<<<<<
+ *             resp = self.sock.recv(READ_BUFFER)
+ *             data +=resp
  */
   while (1) {
-    __pyx_t_1 = (__Pyx_PyBytes_Equals(__pyx_v_tmp, __pyx_kp_b__4, Py_NE)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_2 = (__pyx_t_1 != 0);
+    if (unlikely(__pyx_v_resp == Py_None)) {
+      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "endswith");
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __pyx_t_1 = __Pyx_PyBytes_Tailmatch(__pyx_v_resp, __pyx_kp_b__4, 0, PY_SSIZE_T_MAX, 1); if (unlikely(__pyx_t_1 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
     if (!__pyx_t_2) break;
 
-    /* "cssdbpy/cssdbpy.pyx":52
- *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:
+    /* "cssdbpy/cssdbpy.pyx":61
+ *         cdef bytes resp = b''
+ *         while not resp.endswith(END_RESPONSE):
  *             resp = self.sock.recv(READ_BUFFER)             # <<<<<<<<<<<<<<
- *             data += resp
- *             tmp = resp[-2:]
+ *             data +=resp
+ *         print data
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_recv); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_recv); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_resp, __pyx_t_4);
+    if (!(likely(PyBytes_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_4)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF_SET(__pyx_v_resp, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "cssdbpy/cssdbpy.pyx":53
- *         while tmp != END_RESPONSE:
+    /* "cssdbpy/cssdbpy.pyx":62
+ *         while not resp.endswith(END_RESPONSE):
  *             resp = self.sock.recv(READ_BUFFER)
- *             data += resp             # <<<<<<<<<<<<<<
- *             tmp = resp[-2:]
+ *             data +=resp             # <<<<<<<<<<<<<<
+ *         print data
  *         cdef list ndata = self._parse(data)
  */
-    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_data, __pyx_v_resp); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_data, __pyx_v_resp); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(PyBytes_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_4)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF_SET(__pyx_v_data, ((PyObject*)__pyx_t_4));
-    __pyx_t_4 = 0;
-
-    /* "cssdbpy/cssdbpy.pyx":54
- *             resp = self.sock.recv(READ_BUFFER)
- *             data += resp
- *             tmp = resp[-2:]             # <<<<<<<<<<<<<<
- *         cdef list ndata = self._parse(data)
- *         if ndata and len(ndata)<2:
- */
-    __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_v_resp, -2L, 0, NULL, NULL, &__pyx_slice__6, 1, 0, 1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(PyBytes_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_4)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF_SET(__pyx_v_tmp, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
   }
 
-  /* "cssdbpy/cssdbpy.pyx":55
- *             data += resp
- *             tmp = resp[-2:]
+  /* "cssdbpy/cssdbpy.pyx":63
+ *             resp = self.sock.recv(READ_BUFFER)
+ *             data +=resp
+ *         print data             # <<<<<<<<<<<<<<
+ *         cdef list ndata = self._parse(data)
+ *         if ndata and len(ndata)<2:
+ */
+  if (__Pyx_PrintOne(0, __pyx_v_data) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "cssdbpy/cssdbpy.pyx":64
+ *             data +=resp
+ *         print data
  *         cdef list ndata = self._parse(data)             # <<<<<<<<<<<<<<
  *         if ndata and len(ndata)<2:
  *             return int(ndata.pop())
  */
-  __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_data); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_4 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_parse(__pyx_v_self, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_data); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = ((struct __pyx_vtabstruct_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self->__pyx_vtab)->_parse(__pyx_v_self, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_ndata = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":56
- *             tmp = resp[-2:]
+  /* "cssdbpy/cssdbpy.pyx":65
+ *         print data
  *         cdef list ndata = self._parse(data)
  *         if ndata and len(ndata)<2:             # <<<<<<<<<<<<<<
  *             return int(ndata.pop())
@@ -1873,15 +2104,15 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
   }
   if (unlikely(__pyx_v_ndata == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_6 = PyList_GET_SIZE(__pyx_v_ndata); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyList_GET_SIZE(__pyx_v_ndata); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_1 = ((__pyx_t_6 < 2) != 0);
   __pyx_t_2 = __pyx_t_1;
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "cssdbpy/cssdbpy.pyx":57
+    /* "cssdbpy/cssdbpy.pyx":66
  *         cdef list ndata = self._parse(data)
  *         if ndata and len(ndata)<2:
  *             return int(ndata.pop())             # <<<<<<<<<<<<<<
@@ -1891,19 +2122,19 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_ndata == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "pop");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_t_4 = __Pyx_PyList_Pop(__pyx_v_ndata); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyList_Pop(__pyx_v_ndata); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "cssdbpy/cssdbpy.pyx":56
- *             tmp = resp[-2:]
+    /* "cssdbpy/cssdbpy.pyx":65
+ *         print data
  *         cdef list ndata = self._parse(data)
  *         if ndata and len(ndata)<2:             # <<<<<<<<<<<<<<
  *             return int(ndata.pop())
@@ -1911,7 +2142,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
  */
   }
 
-  /* "cssdbpy/cssdbpy.pyx":58
+  /* "cssdbpy/cssdbpy.pyx":67
  *         if ndata and len(ndata)<2:
  *             return int(ndata.pop())
  *         return ndata             # <<<<<<<<<<<<<<
@@ -1923,12 +2154,12 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
   __pyx_r = __pyx_v_ndata;
   goto __pyx_L0;
 
-  /* "cssdbpy/cssdbpy.pyx":49
- * 
+  /* "cssdbpy/cssdbpy.pyx":57
+ *         return send_object
  * 
  *     cdef _read(self, bytes data = b''):             # <<<<<<<<<<<<<<
  *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:
+ *         cdef bytes resp = b''
  */
 
   /* function exit code */
@@ -1947,7 +2178,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__read(struct __pyx_obj_7
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":64
+/* "cssdbpy/cssdbpy.pyx":73
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  *             return filter(lambda x: x, args)             # <<<<<<<<<<<<<<
@@ -1985,7 +2216,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(CYTHON_UNUSED PyObject *__pyx_self,
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":60
+/* "cssdbpy/cssdbpy.pyx":69
  *         return ndata
  * 
  *     cdef list _parse(self, char* data):             # <<<<<<<<<<<<<<
@@ -2007,26 +2238,26 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_parse", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":61
+  /* "cssdbpy/cssdbpy.pyx":70
  * 
  *     cdef list _parse(self, char* data):
  *         cdef list ndata = data.split(b'\n')             # <<<<<<<<<<<<<<
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_data); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_data); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ndata = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":62
+  /* "cssdbpy/cssdbpy.pyx":71
  *     cdef list _parse(self, char* data):
  *         cdef list ndata = data.split(b'\n')
  *         status, args = ndata.pop(1), ndata[2::2]             # <<<<<<<<<<<<<<
@@ -2035,28 +2266,28 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  */
   if (unlikely(__pyx_v_ndata == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "pop");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_1 = __Pyx_PyList_PopIndex(__pyx_v_ndata, __pyx_int_1, 1, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyList_PopIndex(__pyx_v_ndata, __pyx_int_1, 1, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_GetItem(__pyx_v_ndata, __pyx_slice__8); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_2 = PyObject_GetItem(__pyx_v_ndata, __pyx_slice__7); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_status = __pyx_t_1;
   __pyx_t_1 = 0;
   __pyx_v_args = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":63
+  /* "cssdbpy/cssdbpy.pyx":72
  *         cdef list ndata = data.split(b'\n')
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:             # <<<<<<<<<<<<<<
  *             return filter(lambda x: x, args)
  *         elif status == NOT_FOUND:
  */
-  __pyx_t_3 = (__Pyx_PyBytes_Equals(__pyx_v_status, __pyx_n_b_ok, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = (__Pyx_PyBytes_Equals(__pyx_v_status, __pyx_n_b_ok, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_3) {
 
-    /* "cssdbpy/cssdbpy.pyx":64
+    /* "cssdbpy/cssdbpy.pyx":73
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  *             return filter(lambda x: x, args)             # <<<<<<<<<<<<<<
@@ -2064,9 +2295,9 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  *             return list(b'0')
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_7cssdbpy_7cssdbpy_10Connection_6_parse_lambda, 0, __pyx_n_s_Connection__parse_locals_lambda, NULL, __pyx_n_s_cssdbpy_cssdbpy, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_7cssdbpy_7cssdbpy_10Connection_6_parse_lambda, 0, __pyx_n_s_Connection__parse_locals_lambda, NULL, __pyx_n_s_cssdbpy_cssdbpy, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -2074,15 +2305,15 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
     __Pyx_GIVEREF(__pyx_v_args);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_args);
     __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_filter, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_filter, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_r = ((PyObject*)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "cssdbpy/cssdbpy.pyx":63
+    /* "cssdbpy/cssdbpy.pyx":72
  *         cdef list ndata = data.split(b'\n')
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:             # <<<<<<<<<<<<<<
@@ -2091,17 +2322,17 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  */
   }
 
-  /* "cssdbpy/cssdbpy.pyx":65
+  /* "cssdbpy/cssdbpy.pyx":74
  *         if status == OK:
  *             return filter(lambda x: x, args)
  *         elif status == NOT_FOUND:             # <<<<<<<<<<<<<<
  *             return list(b'0')
  *         return args
  */
-  __pyx_t_3 = (__Pyx_PyBytes_Equals(__pyx_v_status, __pyx_n_b_not_found, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = (__Pyx_PyBytes_Equals(__pyx_v_status, __pyx_n_b_not_found, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_3) {
 
-    /* "cssdbpy/cssdbpy.pyx":66
+    /* "cssdbpy/cssdbpy.pyx":75
  *             return filter(lambda x: x, args)
  *         elif status == NOT_FOUND:
  *             return list(b'0')             # <<<<<<<<<<<<<<
@@ -2109,13 +2340,13 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = PySequence_List(__pyx_kp_b_0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PySequence_List(__pyx_kp_b_0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = ((PyObject*)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "cssdbpy/cssdbpy.pyx":65
+    /* "cssdbpy/cssdbpy.pyx":74
  *         if status == OK:
  *             return filter(lambda x: x, args)
  *         elif status == NOT_FOUND:             # <<<<<<<<<<<<<<
@@ -2124,7 +2355,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  */
   }
 
-  /* "cssdbpy/cssdbpy.pyx":67
+  /* "cssdbpy/cssdbpy.pyx":76
  *         elif status == NOT_FOUND:
  *             return list(b'0')
  *         return args             # <<<<<<<<<<<<<<
@@ -2136,7 +2367,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
   __pyx_r = __pyx_v_args;
   goto __pyx_L0;
 
-  /* "cssdbpy/cssdbpy.pyx":60
+  /* "cssdbpy/cssdbpy.pyx":69
  *         return ndata
  * 
  *     cdef list _parse(self, char* data):             # <<<<<<<<<<<<<<
@@ -2159,7 +2390,7 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "cssdbpy/cssdbpy.pyx":69
+/* "cssdbpy/cssdbpy.pyx":78
  *         return args
  * 
  *     def __del__(self):             # <<<<<<<<<<<<<<
@@ -2167,19 +2398,19 @@ static PyObject *__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse(CYTHON_UNUSED str
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_11__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7cssdbpy_7cssdbpy_10Connection_11__del__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7cssdbpy_7cssdbpy_10Connection_10__del__(((struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self) {
+static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_10__del__(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2190,12 +2421,12 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__del__", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":70
+  /* "cssdbpy/cssdbpy.pyx":79
  * 
  *     def __del__(self):
  *         self.sock.close()             # <<<<<<<<<<<<<<
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_close); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->sock, __pyx_n_s_close); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2208,16 +2439,16 @@ static PyObject *__pyx_pf_7cssdbpy_7cssdbpy_10Connection_8__del__(struct __pyx_o
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cssdbpy/cssdbpy.pyx":69
+  /* "cssdbpy/cssdbpy.pyx":78
  *         return args
  * 
  *     def __del__(self):             # <<<<<<<<<<<<<<
@@ -2295,8 +2526,9 @@ static int __pyx_tp_clear_7cssdbpy_7cssdbpy_Connection(PyObject *o) {
 static PyMethodDef __pyx_methods_7cssdbpy_7cssdbpy_Connection[] = {
   {"_connect", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_3_connect, METH_NOARGS, 0},
   {"execute", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_5execute, METH_VARARGS|METH_KEYWORDS, 0},
-  {"pipeline", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7pipeline, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__del__", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9__del__, METH_NOARGS, 0},
+  {"execute_pipeline", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_7execute_pipeline, METH_VARARGS|METH_KEYWORDS, 0},
+  {"_decode_pipeline", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_9_decode_pipeline, METH_VARARGS|METH_KEYWORDS, 0},
+  {"__del__", (PyCFunction)__pyx_pw_7cssdbpy_7cssdbpy_10Connection_11__del__, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -2382,6 +2614,7 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_b_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 0, 0},
+  {&__pyx_kp_s_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 1, 0},
   {&__pyx_kp_b_0, __pyx_k_0, sizeof(__pyx_k_0), 0, 0, 0, 0},
   {&__pyx_kp_b_127_0_0_1, __pyx_k_127_0_0_1, sizeof(__pyx_k_127_0_0_1), 0, 0, 0, 0},
   {&__pyx_n_s_AF_INET, __pyx_k_AF_INET, sizeof(__pyx_k_AF_INET), 0, 0, 1, 1},
@@ -2392,18 +2625,21 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TCP_NODELAY, __pyx_k_TCP_NODELAY, sizeof(__pyx_k_TCP_NODELAY), 0, 0, 1, 1},
   {&__pyx_kp_b__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 0, 0},
   {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
-  {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
   {&__pyx_kp_b__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 0, 0},
-  {&__pyx_n_u_auth, __pyx_k_auth, sizeof(__pyx_k_auth), 0, 1, 0, 1},
+  {&__pyx_n_s_auth, __pyx_k_auth, sizeof(__pyx_k_auth), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_connect, __pyx_k_connect, sizeof(__pyx_k_connect), 0, 0, 1, 1},
   {&__pyx_n_s_connect_2, __pyx_k_connect_2, sizeof(__pyx_k_connect_2), 0, 0, 1, 1},
   {&__pyx_n_s_cssdbpy_cssdbpy, __pyx_k_cssdbpy_cssdbpy, sizeof(__pyx_k_cssdbpy_cssdbpy), 0, 0, 1, 1},
+  {&__pyx_n_s_decode_pipeline, __pyx_k_decode_pipeline, sizeof(__pyx_k_decode_pipeline), 0, 0, 1, 1},
+  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_execute, __pyx_k_execute, sizeof(__pyx_k_execute), 0, 0, 1, 1},
+  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_filter, __pyx_k_filter, sizeof(__pyx_k_filter), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_host, __pyx_k_host, sizeof(__pyx_k_host), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_n_s_join, __pyx_k_join, sizeof(__pyx_k_join), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_multiprocessing, __pyx_k_multiprocessing, sizeof(__pyx_k_multiprocessing), 0, 0, 1, 1},
   {&__pyx_n_b_not_found, __pyx_k_not_found, sizeof(__pyx_k_not_found), 0, 0, 0, 1},
@@ -2411,9 +2647,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_password, __pyx_k_password, sizeof(__pyx_k_password), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_port, __pyx_k_port, sizeof(__pyx_k_port), 0, 0, 1, 1},
+  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_recv, __pyx_k_recv, sizeof(__pyx_k_recv), 0, 0, 1, 1},
-  {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
+  {&__pyx_n_s_sendall, __pyx_k_sendall, sizeof(__pyx_k_sendall), 0, 0, 1, 1},
   {&__pyx_n_s_setsockopt, __pyx_k_setsockopt, sizeof(__pyx_k_setsockopt), 0, 0, 1, 1},
   {&__pyx_n_s_socket, __pyx_k_socket, sizeof(__pyx_k_socket), 0, 0, 1, 1},
   {&__pyx_n_s_split, __pyx_k_split, sizeof(__pyx_k_split), 0, 0, 1, 1},
@@ -2421,7 +2658,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_filter = __Pyx_GetBuiltinName(__pyx_n_s_filter); if (!__pyx_builtin_filter) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_filter = __Pyx_GetBuiltinName(__pyx_n_s_filter); if (!__pyx_builtin_filter) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2431,49 +2668,38 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cssdbpy/cssdbpy.pyx":52
- *         cdef bytes tmp = b''
- *         while tmp != END_RESPONSE:
+  /* "cssdbpy/cssdbpy.pyx":61
+ *         cdef bytes resp = b''
+ *         while not resp.endswith(END_RESPONSE):
  *             resp = self.sock.recv(READ_BUFFER)             # <<<<<<<<<<<<<<
- *             data += resp
- *             tmp = resp[-2:]
+ *             data +=resp
+ *         print data
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_int_8192); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_int_8192); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "cssdbpy/cssdbpy.pyx":54
- *             resp = self.sock.recv(READ_BUFFER)
- *             data += resp
- *             tmp = resp[-2:]             # <<<<<<<<<<<<<<
- *         cdef list ndata = self._parse(data)
- *         if ndata and len(ndata)<2:
- */
-  __pyx_slice__6 = PySlice_New(__pyx_int_neg_2, Py_None, Py_None); if (unlikely(!__pyx_slice__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_slice__6);
-  __Pyx_GIVEREF(__pyx_slice__6);
-
-  /* "cssdbpy/cssdbpy.pyx":61
+  /* "cssdbpy/cssdbpy.pyx":70
  * 
  *     cdef list _parse(self, char* data):
  *         cdef list ndata = data.split(b'\n')             # <<<<<<<<<<<<<<
  *         status, args = ndata.pop(1), ndata[2::2]
  *         if status == OK:
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_b__2); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_b__4); if (unlikely(!__pyx_tuple__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "cssdbpy/cssdbpy.pyx":62
+  /* "cssdbpy/cssdbpy.pyx":71
  *     cdef list _parse(self, char* data):
  *         cdef list ndata = data.split(b'\n')
  *         status, args = ndata.pop(1), ndata[2::2]             # <<<<<<<<<<<<<<
  *         if status == OK:
  *             return filter(lambda x: x, args)
  */
-  __pyx_slice__8 = PySlice_New(__pyx_int_2, Py_None, __pyx_int_2); if (unlikely(!__pyx_slice__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_slice__8);
-  __Pyx_GIVEREF(__pyx_slice__8);
+  __pyx_slice__7 = PySlice_New(__pyx_int_2, Py_None, __pyx_int_2); if (unlikely(!__pyx_slice__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_slice__7);
+  __Pyx_GIVEREF(__pyx_slice__7);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2488,7 +2714,6 @@ static int __Pyx_InitGlobals(void) {
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_8192 = PyInt_FromLong(8192); if (unlikely(!__pyx_int_8192)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_8888 = PyInt_FromLong(8888); if (unlikely(!__pyx_int_8888)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_int_neg_2 = PyInt_FromLong(-2); if (unlikely(!__pyx_int_neg_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2585,10 +2810,10 @@ PyMODINIT_FUNC PyInit_cssdbpy(void)
   __pyx_vtable_7cssdbpy_7cssdbpy_Connection._connect = (PyObject *(*)(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *, int __pyx_skip_dispatch))__pyx_f_7cssdbpy_7cssdbpy_10Connection__connect;
   __pyx_vtable_7cssdbpy_7cssdbpy_Connection._read = (PyObject *(*)(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *, struct __pyx_opt_args_7cssdbpy_7cssdbpy_10Connection__read *__pyx_optional_args))__pyx_f_7cssdbpy_7cssdbpy_10Connection__read;
   __pyx_vtable_7cssdbpy_7cssdbpy_Connection._parse = (PyObject *(*)(struct __pyx_obj_7cssdbpy_7cssdbpy_Connection *, char *))__pyx_f_7cssdbpy_7cssdbpy_10Connection__parse;
-  if (PyType_Ready(&__pyx_type_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_7cssdbpy_7cssdbpy_Connection.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_7cssdbpy_7cssdbpy_Connection.tp_dict, __pyx_vtabptr_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "Connection", (PyObject *)&__pyx_type_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_7cssdbpy_7cssdbpy_Connection.tp_dict, __pyx_vtabptr_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "Connection", (PyObject *)&__pyx_type_7cssdbpy_7cssdbpy_Connection) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_7cssdbpy_7cssdbpy_Connection = &__pyx_type_7cssdbpy_7cssdbpy_Connection;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -2603,7 +2828,7 @@ PyMODINIT_FUNC PyInit_cssdbpy(void)
  * from multiprocessing import Lock
  * 
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_socket, 0, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_socket, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_socket, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2612,14 +2837,14 @@ PyMODINIT_FUNC PyInit_cssdbpy(void)
  * import socket
  * from multiprocessing import Lock             # <<<<<<<<<<<<<<
  * 
- * DEF SEND_TEMPLATE = b'{}\n{}\n'
+ * DEF COMMAND_LENGTH_TEMPLATE = b'*{}\n'
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Lock);
   __Pyx_GIVEREF(__pyx_n_s_Lock);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Lock);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_multiprocessing, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_multiprocessing, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Lock); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -2973,138 +3198,80 @@ invalid_keyword:
     return 0;
 }
 
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-    if (s1 == s2) {
-        return (equals == Py_EQ);
-    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
-        const char *ps1, *ps2;
-        Py_ssize_t length = PyBytes_GET_SIZE(s1);
-        if (length != PyBytes_GET_SIZE(s2))
-            return (equals == Py_NE);
-        ps1 = PyBytes_AS_STRING(s1);
-        ps2 = PyBytes_AS_STRING(s2);
-        if (ps1[0] != ps2[0]) {
-            return (equals == Py_NE);
-        } else if (length == 1) {
-            return (equals == Py_EQ);
-        } else {
-            int result = memcmp(ps1, ps2, (size_t)length);
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
-        return (equals == Py_NE);
-    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
-        return (equals == Py_NE);
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-#endif
+#if !CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyBytes_Join(PyObject* sep, PyObject* values) {
+    return PyObject_CallMethodObjArgs(sep, __pyx_n_s_join, values, NULL);
 }
+#endif
 
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
-        Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** _py_start, PyObject** _py_stop, PyObject** _py_slice,
-        int has_cstart, int has_cstop, CYTHON_UNUSED int wraparound) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyMappingMethods* mp;
+static int __Pyx_PyBytes_SingleTailmatch(PyObject* self, PyObject* arg,
+                                         Py_ssize_t start, Py_ssize_t end, int direction) {
+    const char* self_ptr = PyBytes_AS_STRING(self);
+    Py_ssize_t self_len = PyBytes_GET_SIZE(self);
+    const char* sub_ptr;
+    Py_ssize_t sub_len;
+    int retval;
+    Py_buffer view;
+    view.obj = NULL;
+    if ( PyBytes_Check(arg) ) {
+        sub_ptr = PyBytes_AS_STRING(arg);
+        sub_len = PyBytes_GET_SIZE(arg);
+    }
 #if PY_MAJOR_VERSION < 3
-    PySequenceMethods* ms = Py_TYPE(obj)->tp_as_sequence;
-    if (likely(ms && ms->sq_slice)) {
-        if (!has_cstart) {
-            if (_py_start && (*_py_start != Py_None)) {
-                cstart = __Pyx_PyIndex_AsSsize_t(*_py_start);
-                if ((cstart == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstart = 0;
-        }
-        if (!has_cstop) {
-            if (_py_stop && (*_py_stop != Py_None)) {
-                cstop = __Pyx_PyIndex_AsSsize_t(*_py_stop);
-                if ((cstop == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstop = PY_SSIZE_T_MAX;
-        }
-        if (wraparound && unlikely((cstart < 0) | (cstop < 0)) && likely(ms->sq_length)) {
-            Py_ssize_t l = ms->sq_length(obj);
-            if (likely(l >= 0)) {
-                if (cstop < 0) {
-                    cstop += l;
-                    if (cstop < 0) cstop = 0;
-                }
-                if (cstart < 0) {
-                    cstart += l;
-                    if (cstart < 0) cstart = 0;
-                }
-            } else {
-                if (PyErr_ExceptionMatches(PyExc_OverflowError))
-                    PyErr_Clear();
-                else
-                    goto bad;
-            }
-        }
-        return ms->sq_slice(obj, cstart, cstop);
+    else if ( PyUnicode_Check(arg) ) {
+        return (int) PyUnicode_Tailmatch(self, arg, start, end, direction);
     }
 #endif
-    mp = Py_TYPE(obj)->tp_as_mapping;
-    if (likely(mp && mp->mp_subscript))
-#endif
-    {
-        PyObject* result;
-        PyObject *py_slice, *py_start, *py_stop;
-        if (_py_slice) {
-            py_slice = *_py_slice;
-        } else {
-            PyObject* owned_start = NULL;
-            PyObject* owned_stop = NULL;
-            if (_py_start) {
-                py_start = *_py_start;
-            } else {
-                if (has_cstart) {
-                    owned_start = py_start = PyInt_FromSsize_t(cstart);
-                    if (unlikely(!py_start)) goto bad;
-                } else
-                    py_start = Py_None;
-            }
-            if (_py_stop) {
-                py_stop = *_py_stop;
-            } else {
-                if (has_cstop) {
-                    owned_stop = py_stop = PyInt_FromSsize_t(cstop);
-                    if (unlikely(!py_stop)) {
-                        Py_XDECREF(owned_start);
-                        goto bad;
-                    }
-                } else
-                    py_stop = Py_None;
-            }
-            py_slice = PySlice_New(py_start, py_stop, Py_None);
-            Py_XDECREF(owned_start);
-            Py_XDECREF(owned_stop);
-            if (unlikely(!py_slice)) goto bad;
-        }
+    else {
+        if (unlikely(PyObject_GetBuffer(self, &view, PyBUF_SIMPLE) == -1))
+            return -1;
+        sub_ptr = (const char*) view.buf;
+        sub_len = view.len;
+    }
+    if (end > self_len)
+        end = self_len;
+    else if (end < 0)
+        end += self_len;
+    if (end < 0)
+        end = 0;
+    if (start < 0)
+        start += self_len;
+    if (start < 0)
+        start = 0;
+    if (direction > 0) {
+        if (end-sub_len > start)
+            start = end - sub_len;
+    }
+    if (start + sub_len <= end)
+        retval = !memcmp(self_ptr+start, sub_ptr, (size_t)sub_len);
+    else
+        retval = 0;
+    if (view.obj)
+        PyBuffer_Release(&view);
+    return retval;
+}
+static int __Pyx_PyBytes_Tailmatch(PyObject* self, PyObject* substr,
+                                   Py_ssize_t start, Py_ssize_t end, int direction) {
+    if (unlikely(PyTuple_Check(substr))) {
+        Py_ssize_t i, count = PyTuple_GET_SIZE(substr);
+        for (i = 0; i < count; i++) {
+            int result;
 #if CYTHON_COMPILING_IN_CPYTHON
-        result = mp->mp_subscript(obj, py_slice);
+            result = __Pyx_PyBytes_SingleTailmatch(self, PyTuple_GET_ITEM(substr, i),
+                                                   start, end, direction);
 #else
-        result = PyObject_GetItem(obj, py_slice);
+            PyObject* sub = PySequence_ITEM(substr, i);
+            if (unlikely(!sub)) return -1;
+            result = __Pyx_PyBytes_SingleTailmatch(self, sub, start, end, direction);
+            Py_DECREF(sub);
 #endif
-        if (!_py_slice) {
-            Py_DECREF(py_slice);
+            if (result) {
+                return result;
+            }
         }
-        return result;
+        return 0;
     }
-    PyErr_Format(PyExc_TypeError,
-        "'%.200s' object is unsliceable", Py_TYPE(obj)->tp_name);
-bad:
-    return NULL;
+    return __Pyx_PyBytes_SingleTailmatch(self, substr, start, end, direction);
 }
 
 static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name) {
@@ -3247,6 +3414,43 @@ static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t
     }
 }
 #endif
+
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+    if (s1 == s2) {
+        return (equals == Py_EQ);
+    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
+        const char *ps1, *ps2;
+        Py_ssize_t length = PyBytes_GET_SIZE(s1);
+        if (length != PyBytes_GET_SIZE(s2))
+            return (equals == Py_NE);
+        ps1 = PyBytes_AS_STRING(s1);
+        ps2 = PyBytes_AS_STRING(s2);
+        if (ps1[0] != ps2[0]) {
+            return (equals == Py_NE);
+        } else if (length == 1) {
+            return (equals == Py_EQ);
+        } else {
+            int result = memcmp(ps1, ps2, (size_t)length);
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
+        return (equals == Py_NE);
+    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
+        return (equals == Py_NE);
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+#endif
+}
 
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
     PyObject* fake_module;
@@ -4348,6 +4552,147 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
                                      little, !is_unsigned);
     }
 }
+
+#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+static PyObject *__Pyx_GetStdout(void) {
+    PyObject *f = PySys_GetObject((char *)"stdout");
+    if (!f) {
+        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
+    }
+    return f;
+}
+static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
+    int i;
+    if (!f) {
+        if (!(f = __Pyx_GetStdout()))
+            return -1;
+    }
+    Py_INCREF(f);
+    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
+        PyObject* v;
+        if (PyFile_SoftSpace(f, 1)) {
+            if (PyFile_WriteString(" ", f) < 0)
+                goto error;
+        }
+        v = PyTuple_GET_ITEM(arg_tuple, i);
+        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
+            goto error;
+        if (PyString_Check(v)) {
+            char *s = PyString_AsString(v);
+            Py_ssize_t len = PyString_Size(v);
+            if (len > 0) {
+                switch (s[len-1]) {
+                    case ' ': break;
+                    case '\f': case '\r': case '\n': case '\t': case '\v':
+                        PyFile_SoftSpace(f, 0);
+                        break;
+                    default:  break;
+                }
+            }
+        }
+    }
+    if (newline) {
+        if (PyFile_WriteString("\n", f) < 0)
+            goto error;
+        PyFile_SoftSpace(f, 0);
+    }
+    Py_DECREF(f);
+    return 0;
+error:
+    Py_DECREF(f);
+    return -1;
+}
+#else
+static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
+    PyObject* kwargs = 0;
+    PyObject* result = 0;
+    PyObject* end_string;
+    if (unlikely(!__pyx_print)) {
+        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
+        if (!__pyx_print)
+            return -1;
+    }
+    if (stream) {
+        kwargs = PyDict_New();
+        if (unlikely(!kwargs))
+            return -1;
+        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
+            goto bad;
+        if (!newline) {
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                goto bad;
+            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                goto bad;
+            }
+            Py_DECREF(end_string);
+        }
+    } else if (!newline) {
+        if (unlikely(!__pyx_print_kwargs)) {
+            __pyx_print_kwargs = PyDict_New();
+            if (unlikely(!__pyx_print_kwargs))
+                return -1;
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                return -1;
+            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                return -1;
+            }
+            Py_DECREF(end_string);
+        }
+        kwargs = __pyx_print_kwargs;
+    }
+    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
+    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
+        Py_DECREF(kwargs);
+    if (!result)
+        return -1;
+    Py_DECREF(result);
+    return 0;
+bad:
+    if (kwargs != __pyx_print_kwargs)
+        Py_XDECREF(kwargs);
+    return -1;
+}
+#endif
+
+#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
+    if (!f) {
+        if (!(f = __Pyx_GetStdout()))
+            return -1;
+    }
+    Py_INCREF(f);
+    if (PyFile_SoftSpace(f, 0)) {
+        if (PyFile_WriteString(" ", f) < 0)
+            goto error;
+    }
+    if (PyFile_WriteObject(o, f, Py_PRINT_RAW) < 0)
+        goto error;
+    if (PyFile_WriteString("\n", f) < 0)
+        goto error;
+    Py_DECREF(f);
+    return 0;
+error:
+    Py_DECREF(f);
+    return -1;
+    /* the line below is just to avoid C compiler
+     * warnings about unused functions */
+    return __Pyx_Print(f, NULL, 0);
+}
+#else
+static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
+    int res;
+    PyObject* arg_tuple = PyTuple_Pack(1, o);
+    if (unlikely(!arg_tuple))
+        return -1;
+    res = __Pyx_Print(stream, arg_tuple, 1);
+    Py_DECREF(arg_tuple);
+    return res;
+}
+#endif
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
